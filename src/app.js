@@ -1,15 +1,20 @@
-var arc = d3.arc();
+const arc = d3.arc();
 const pool_sizes = make_angular([20,60,5,1,34,36,1,0.5,5,0.3,40,33,12,4,2,3.4,43])
 
-var chart = d3.select("body").append("svg:svg")
-  .attr("class", "chart")
-  .attr("width", 420)
-  .attr("height", 420).append("svg:g")
-  .attr("transform", "translate(200,200)");
+const svg = d3.select(".container").append("svg");
 
-chart.selectAll("path")
+let width = document.getElementsByClassName("container")[0].offsetWidth
+let height = document.getElementsByClassName("container")[0].offsetHeight   
+
+svg.attr("width", '100%')
+  .attr("height",  '100%')
+  // .attr("transform", "translate(200,200)")
+  .style("background", "#ccc")
+
+svg.selectAll("path")
   .data(pool_sizes)
-  .enter().append("svg:path")
+  .enter()
+  .append("path")
   .attr("fill", (d) => {return `rgba(${d.start * 30}, ${d.end * 30}, ${d.end * 30}, 0.5)`})
   .attr("d", function(d, i){
     return arc({innerRadius: 119,
