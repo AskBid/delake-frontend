@@ -10,12 +10,15 @@ var chart = d3.select("body").append("svg:svg")
 chart.selectAll("path")
   .data(pool_sizes)
   .enter().append("svg:path")
-  .attr("fill", `rgba(0, 130, 0, 0.5)`)
+  .attr("fill", (d) => {return `rgba(${d.start * 30}, ${d.end * 30}, ${d.end * 30}, 0.5)`})
   .attr("d", function(d, i){
-    return arc({innerRadius: 70,
-      outerRadius: 85+i,
-      startAngle: pool_sizes[i - 1],
-      endAngle: d})
+    return arc({innerRadius: 119,
+      outerRadius: 125,
+      startAngle: d.start,
+      endAngle: d.end,
+      padAngle: 0.006,
+      padRadius: 50,
+      cornerRadius: 4})
   });
 
 
@@ -25,5 +28,10 @@ function make_angular(values) {
   const angular = values.map((pool_size) => {
     return (pool_size / sum) * t
   });
-  return angular
+  let previous = 0
+  return angular.map((e) => {
+    const arc = {start: previous, end: previous + e}
+    previous += e
+    return arc
+  })
 }
