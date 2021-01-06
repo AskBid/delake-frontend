@@ -7,10 +7,14 @@ let width = document.getElementsByClassName("container")[0].offsetWidth
 let height = document.getElementsByClassName("container")[0].offsetHeight 
 let minimum_dimension = Math.min(width, height)
 
+//https://github.com/d3/d3-scale-chromatic
+//https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
+var color = d3.scaleOrdinal().domain(pool_sizes)
+  .range(d3.schemePastel1);
+
 svg.attr("width", '100%')
   .attr("height",  '100%')
-  // .attr("transform", "translate(200,200)")
-  .style("background", "#eee  ")
+  .style("background", "#fff")
 
 let g = svg.append('g')
   .attr("transform", `translate(${width / 2}, ${height / 2})`)
@@ -19,7 +23,8 @@ g.selectAll("path")
   .data(pool_sizes)
   .enter()
   .append("path")
-  .attr("fill", (d) => {return `rgba(${d.start * 30}, ${d.end * 30}, ${d.end * 30}, 0.5)`})
+  .attr("fill", function(d, i) { return color(Math.random() * 1000); })
+  .style("opacity", 1)
   .attr("d", function(d, i){
     return arc({
       outerRadius: (minimum_dimension/2)-50,
