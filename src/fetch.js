@@ -13,3 +13,18 @@ function getEpochs() {
 	  	return obj
 	  })
 }
+
+function getEpochPoolSizes(epochno) {
+	return fetch(`${BACKEND_URL}/epoch_pool_sizes?epochno=${epochno}`,{
+	    method:'GET',
+	    headers: {
+	      "Content-Type":"application/json",
+	      "Accept": "application/json"
+	    }
+	  })
+	  .then(resp=>resp.json())
+	  .then(obj=> {
+	  	draw(obj)
+	  	return obj
+	  })
+}
