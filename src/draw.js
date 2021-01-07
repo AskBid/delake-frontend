@@ -1,8 +1,8 @@
-function draw(sizes) { 
+function draw(edfJSON) { 
   const arc = d3.arc();
   const ribbon = d3.ribbon();
-  let pool_sizes = make_angular(sizes.slice(0,300).map((pool) => pool.size));
-
+  let pool_sizes = make_angular(edfJSON);
+  debugger
   let svg = d3.select(".container").append("svg");
 
   let width = document.getElementsByClassName("container")[0].offsetWidth;
@@ -51,20 +51,19 @@ function draw(sizes) {
         target: {startAngle: pool_sizes[parseInt(r * pool_sizes.length)].start, endAngle: pool_sizes[parseInt(r * pool_sizes.length)].start+0.001, radius: (minimum_dimension/2)-66}})
       })
     .style('stroke', function(d, i) { return color(i); });
-
-
 }
 
-function make_angular(values) {
-  const sum = values.reduce((a, b) => a + b, 0);
+
+function make_angular(edfJSON) {
+  const sum = Object.keys(edfJSON).reduce((a, k) => a + edfJSON[k].size, 0);
   const t = Math.PI * 2;
-  const angular = values.map((pool_size) => {
-    return (pool_size / sum) * t
+  const angular = Object.keys(edfJSON).forEach((k) => {
+    edfJSON[k].angular_size = (edfJSON[k].size / sum) * t
   });
   let previous = 0
-  return angular.map((e) => {
-    const arc = {start: previous, end: previous + e}
-    previous += e
-    return arc
+  Object.keys(edfJSON).forEach((k) => {
+    const arc = {start: previous, end: previous + edfJSON[k].angular_size}
+    previous += edfJSON[k].angular_size
+    edfJSON[k].arc = arc
   })
 }
