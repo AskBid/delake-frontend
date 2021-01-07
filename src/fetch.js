@@ -1,7 +1,7 @@
 const BACKEND_URL = 'http://localhost:3000'
 
-function getEpochs() {
-	return fetch(`${BACKEND_URL}/epoch_pool_sizes/epochs`,{
+function getEDFepochs() {
+	return fetch(`${BACKEND_URL}/epoch_delegations_flows`,{
 	    method:'GET',
 	    headers: {
 	      "Content-Type":"application/json",
@@ -10,12 +10,12 @@ function getEpochs() {
 	  })
 	  .then(resp=>resp.json())
 	  .then(obj=> {
-	  	return obj
+	  	console.log(obj)
 	  })
 }
 
-function getEpochPoolSizes(epochno) {
-	return fetch(`${BACKEND_URL}/epoch_pool_sizes?epochno=${epochno}`,{
+function getEDF(id) {
+	return fetch(`${BACKEND_URL}/epoch_delegations_flows/${id}`,{
 	    method:'GET',
 	    headers: {
 	      "Content-Type":"application/json",
@@ -24,7 +24,7 @@ function getEpochPoolSizes(epochno) {
 	  })
 	  .then(resp=>resp.json())
 	  .then(obj=> {
+	  	console.log(obj)
 	  	draw(obj)
-	  	return obj
 	  })
 }
