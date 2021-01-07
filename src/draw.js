@@ -1,11 +1,13 @@
-function draw(sizes) { const arc = d3.arc();
-  let pool_sizes = make_angular(sizes.map((pool) => pool.size))
+function draw(sizes) { 
+  const arc = d3.arc();
+  const ribbon = d3.ribbon();
+  let pool_sizes = make_angular(sizes.slice(0,300).map((pool) => pool.size));
 
   let svg = d3.select(".container").append("svg");
 
-  let width = document.getElementsByClassName("container")[0].offsetWidth
-  let height = document.getElementsByClassName("container")[0].offsetHeight 
-  let minimum_dimension = Math.min(width, height)
+  let width = document.getElementsByClassName("container")[0].offsetWidth;
+  let height = document.getElementsByClassName("container")[0].offsetHeight ;
+  let minimum_dimension = Math.min(width, height);
 
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
@@ -14,16 +16,16 @@ function draw(sizes) { const arc = d3.arc();
 
   svg.attr("width", '100%')
     .attr("height",  '100%')
-    .style("background", "#fff")
+    .style("background", "#fff");
 
   let g = svg.append('g')
-    .attr("transform", `translate(${width / 2}, ${height / 2})`)
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  g.selectAll("path")
+  g.selectAll("path #chord")
     .data(pool_sizes)
     .enter()
     .append("path")
-    .attr("fill", function(d, i) { return color(Math.random() * 1000); })
+    .attr("fill", function(d, i) { return color(i); })
     .style("opacity", 1)
     .attr("d", function(d, i){
       return arc({
@@ -33,8 +35,24 @@ function draw(sizes) { const arc = d3.arc();
         endAngle: d.end,
         padAngle: 0.006,
         padRadius: 1,
-        cornerRadius: 4})
-    }).style('stroke', 'rgba(40,40,40,0.6)');
+        cornerRadius: 4})})
+    .style('stroke', function(d, i) { return color(i); });
+
+  g.selectAll("path #ribbon")
+    .data(pool_sizes)
+    .enter()
+    .append("path")
+    .attr("fill", function(d, i) { return color(i); })
+    .style("opacity", 1)
+    .attr("d", function(d, i) {
+      let r = Math.random()
+      return ribbon({
+        source: {startAngle: d.start, endAngle: d.start+0.001, radius: (minimum_dimension/2)-66},
+        target: {startAngle: pool_sizes[parseInt(r * pool_sizes.length)].start, endAngle: pool_sizes[parseInt(r * pool_sizes.length)].start+0.001, radius: (minimum_dimension/2)-66}})
+      })
+    .style('stroke', function(d, i) { return color(i); });
+
+
 }
 
 function make_angular(values) {
