@@ -1,17 +1,19 @@
 function draw(edfJSON) { 
   const arc = d3.arc();
   const ribbon = d3.ribbon();
-  let pool_sizes = make_angular(edfJSON);
-  debugger
+  make_angular(edfJSON);
+  let edfARR = Object.keys(edfJSON)
+
   let svg = d3.select(".container").append("svg");
 
   let width = document.getElementsByClassName("container")[0].offsetWidth;
   let height = document.getElementsByClassName("container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
+  let min_rad = parseInt((minimum_dimension/2))-50
 
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
-  var color = d3.scaleOrdinal().domain(pool_sizes)
+  var color = d3.scaleOrdinal().domain(edfARR)
     .range(d3.schemePastel1);
 
   svg.attr("width", '100%')
@@ -22,35 +24,46 @@ function draw(edfJSON) {
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
   g.selectAll("path #chord")
-    .data(pool_sizes)
+    .data(edfARR)
     .enter()
     .append("path")
     .attr("fill", function(d, i) { return color(i); })
     .style("opacity", 1)
     .attr("d", function(d, i){
       return arc({
-        outerRadius: (minimum_dimension/2)-50,
-        innerRadius: (minimum_dimension/2)-60,
-        startAngle: d.start,
-        endAngle: d.end,
-        padAngle: 0.006,
-        padRadius: 1,
-        cornerRadius: 4})})
-    .style('stroke', function(d, i) { return color(i); });
+        outerRadius: min_rad+(edfJSON[d].size/10000000),
+        innerRadius: min_rad,
+        startAngle: edfJSON[d].arc.start,
+        endAngle: edfJSON[d].arc.end,
+        padAngle: 0,
+        padRadius: 0,
+        cornerRadius: 1})})
+    .style('stroke', 'rgba(0,0,0,0.7)')
+    .attr("stroke-width", '0.1')
 
-  g.selectAll("path #ribbon")
-    .data(pool_sizes)
-    .enter()
-    .append("path")
-    .attr("fill", function(d, i) { return color(i); })
-    .style("opacity", 1)
-    .attr("d", function(d, i) {
-      let r = Math.random()
-      return ribbon({
-        source: {startAngle: d.start, endAngle: d.start+0.001, radius: (minimum_dimension/2)-66},
-        target: {startAngle: pool_sizes[parseInt(r * pool_sizes.length)].start, endAngle: pool_sizes[parseInt(r * pool_sizes.length)].start+0.001, radius: (minimum_dimension/2)-66}})
-      })
-    .style('stroke', function(d, i) { return color(i); });
+  edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
+
+  function draw_ribbon(to, from) {
+    g.selectAll("path #ribbon")
+      .data(Object.keys(from))
+      .enter()
+      .append("path")
+      .attr("fill", function(d, i) { return color(i); })
+      .style("opacity", 1)
+      .attr("d", function(d) {
+        const s_middle = arc_middle(edfJSON[to].arc)
+        const t_middle = arc_middle(edfJSON[d].arc)
+        return ribbon({
+          source: {startAngle: s_middle, endAngle: s_middle+0.001, radius: min_rad-5  },
+          target: {startAngle: t_middle, endAngle: t_middle+0.001, radius: min_rad}})
+        })
+      // .style('stroke', function(d, i) { return color(i); });
+  }
+}
+
+
+function arc_middle(arc) {
+  return arc.start + ((arc.end - arc.start)/2)
 }
 
 
