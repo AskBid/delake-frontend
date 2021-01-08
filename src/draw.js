@@ -78,20 +78,28 @@ function deploy_space(obj, middle, new_size) {
   let end;
   let taken_anticlock;
   let taken_clock;
-  if (!obj.taken_space || obj.taken_space.anticlock === 0) {
+  if (!obj.taken_space || obj.taken_space.anticlock === 0 || !obj.taken_space.anticlock) {
+    // if this is the first ribbon placed on this pool's arc
     const half = new_size/2;
     start = middle - half;
     end = middle + half;
     taken_anticlock = half;
     taken_clock = half;
   } else {
-    if (obj.taken_space.anticlock >= obj.taken_space.clock) {
+    if (obj.taken_space.anticlock <= obj.taken_space.clock) {
+      // if thhere is more space available on the anticlock side of the pool's arc
       end = middle - obj.taken_space.anticlock;
       start = end - new_size;
       taken_anticlock = obj.taken_space.anticlock + new_size;
+    } else {
+      // if thhere is more space available on the clock side of the pool's arc
+      start = middle + obj.taken_space.clock;
+      end = start + new_size;
+      taken_clock = obj.taken_space.clock + new_size;
     }
   };
-
+  obj.taken_space = {anticlock: taken_anticlock, clock: taken_clock}
+  return {start: start, end: end}
 }
 
 
