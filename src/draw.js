@@ -1,7 +1,7 @@
 function draw(edfJSON) { 
   const arc = d3.arc();
-  const ribbon = d3.ribbon();
-  make_angular(edfJSON);
+  const ribbon = d3.ribbonArrow();
+  const sum_sizes = make_angular(edfJSON);
   let edfARR = Object.keys(edfJSON)
 
   let svg = d3.select(".container").append("svg");
@@ -37,9 +37,11 @@ function draw(edfJSON) {
         endAngle: edfJSON[d].arc.end,
         padAngle: 0,
         padRadius: 0,
-        cornerRadius: 1})})
+        cornerRadius: 1})
+      })
     .style('stroke', 'rgba(0,0,0,0.7)')
     .attr("stroke-width", '0.1')
+    .attr("id", d => edfJSON[d].ticker)
 
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
 
@@ -49,15 +51,19 @@ function draw(edfJSON) {
       .enter()
       .append("path")
       .attr("fill", function(d, i) { return color(i); })
-      .style("opacity", 1)
+      .style("opacity", 0.5)
       .attr("d", function(d) {
-        const s_middle = arc_middle(edfJSON[to].arc)
-        const t_middle = arc_middle(edfJSON[d].arc)
-        return ribbon({
-          source: {startAngle: s_middle, endAngle: s_middle+0.001, radius: min_rad-5  },
-          target: {startAngle: t_middle, endAngle: t_middle+0.001, radius: min_rad}})
-        })
-      // .style('stroke', function(d, i) { return color(i); });
+        if (!(d === 'new_delegation')) {
+          const s_middle = arc_middle(edfJSON[to].arc)
+          const t_middle = arc_middle(edfJSON[d].arc)
+          const size = (from[d] / sum_sizes) * (Math.PI * 2)
+          return ribbon({
+            source: {startAngle: s_middle, endAngle: s_middle+size, radius: min_rad-2  },
+            target: {startAngle: t_middle, endAngle: t_middle+size, radius: min_rad}})
+        }
+      })
+      .style('stroke', function(d, i) { return color(i); })
+      .attr("stroke-width", '0.1');
   }
 }
 
@@ -79,4 +85,5 @@ function make_angular(edfJSON) {
     previous += edfJSON[k].angular_size
     edfJSON[k].arc = arc
   })
+  return sum
 }
