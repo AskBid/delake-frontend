@@ -63,8 +63,8 @@ function draw(edfJSON) {
       .style("opacity", 0.5)
       .attr("d", function(from_id) {
         if (!(from_id === 'new_delegation')) {
-          const source = edfJSON[to];
-          const target = edfJSON[from_id];
+          const source = edfJSON[from_id];
+          const target = edfJSON[to];
           const s_middle = arc_middle(source.arc);
           const t_middle = arc_middle(target.arc);
           const dele_size = from[from_id]
@@ -72,6 +72,7 @@ function draw(edfJSON) {
           const arc_size = (dele_size / sum_sizes) * (Math.PI * 2);
           const source_arc = deploy_space(source, s_middle, arc_size)
           const target_arc = deploy_space(target, t_middle, arc_size)
+          console.log()
           return ribbon({
             source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad},
             target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
@@ -102,30 +103,22 @@ function deploy_space(obj, middle, new_size) {
     end = middle + half;
     taken_anticlock = half;
     taken_clock = half;
-    if (!taken_clock || !taken_anticlock) {console.log(11111)}
-    if (!taken_clock || !taken_anticlock) {debugger}
   } else {
     if (obj.taken_space.anticlock <= obj.taken_space.clock) {
-      // if thhere is more space available on the anticlock side of the pool's arc
+      // if there is more space available on the anticlock side of the pool's arc
       end = middle - obj.taken_space.anticlock;
       start = end - new_size;
       taken_anticlock = obj.taken_space.anticlock + new_size;
       taken_clock = obj.taken_space.clock
-      if (!taken_anticlock) {console.log(22222)}
-      if (!taken_anticlock) {debugger}
     } else {
-      // if thhere is more space available on the clock side of the pool's arc
+      // if there is more space available on the clock side of the pool's arc
       start = middle + obj.taken_space.clock;
       end = start + new_size;
       taken_clock = obj.taken_space.clock + new_size;
       taken_anticlock = obj.taken_space.anticlock
-      if (!taken_clock) {console.log(33333)}
-      if (!taken_clock) {debugger}
     }
   };
   obj.taken_space = {anticlock: taken_anticlock, clock: taken_clock}
-  // console.log({start: start, end: end})
-  if (!start) {debugger}
   return {start: start, end: end}
 }
 
