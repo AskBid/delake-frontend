@@ -52,19 +52,46 @@ function draw(edfJSON) {
       .append("path")
       .attr("fill", function(d, i) { return color(i); })
       .style("opacity", 0.5)
-      .attr("d", function(d) {
-        if (!(d === 'new_delegation')) {
-          const s_middle = arc_middle(edfJSON[to].arc)
-          const t_middle = arc_middle(edfJSON[d].arc)
-          const size = (from[d] / sum_sizes) * (Math.PI * 2)
+      .attr("d", function(from_id) {
+        if (!(from_id === 'new_delegation')) {
+          const source = edfJSON[to];
+          const target = edfJSON[from_id];
+          const s_middle = arc_middle(source.arc);
+          const t_middle = arc_middle(target.arc);
+          const arc_size = (from[from_id] / sum_sizes) * (Math.PI * 2);
+          const source_arc = deploy_space(source, s_middle, arc_size)
+          const target_arc = deploy_space(target, t_middle, arc_size)
           return ribbon({
-            source: {startAngle: s_middle, endAngle: s_middle+size, radius: min_rad-2  },
-            target: {startAngle: t_middle, endAngle: t_middle+size, radius: min_rad}})
+            source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad-2},
+            target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
+          })
         }
       })
       .style('stroke', function(d, i) { return color(i); })
       .attr("stroke-width", '0.1');
   }
+}
+
+
+function deploy_space(obj, middle, new_size) {
+  let start;
+  let end;
+  let taken_anticlock;
+  let taken_clock;
+  if (!obj.taken_space || obj.taken_space.anticlock === 0) {
+    const half = new_size/2;
+    start = middle - half;
+    end = middle + half;
+    taken_anticlock = half;
+    taken_clock = half;
+  } else {
+    if (obj.taken_space.anticlock >= obj.taken_space.clock) {
+      end = middle - obj.taken_space.anticlock;
+      start = end - new_size;
+      taken_anticlock = obj.taken_space.anticlock + new_size;
+    }
+  };
+
 }
 
 
