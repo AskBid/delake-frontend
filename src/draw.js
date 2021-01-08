@@ -62,23 +62,29 @@ function draw(edfJSON) {
       })
       .style("opacity", 0.5)
       .attr("d", function(from_id) {
+        const target = edfJSON[to];
+        const t_middle = arc_middle(target.arc);
+        const dele_size = from[from_id]
+        const arc_size = (dele_size / sum_sizes) * (Math.PI * 2);
+        if (dele_size === 0) {return null}
         if (!(from_id === 'new_delegation')) {
           const source = edfJSON[from_id];
-          const target = edfJSON[to];
           const s_middle = arc_middle(source.arc);
-          const t_middle = arc_middle(target.arc);
-          const dele_size = from[from_id]
-          if (dele_size === 0) {return null}
-          const arc_size = (dele_size / sum_sizes) * (Math.PI * 2);
           const source_arc = deploy_space(source, s_middle, arc_size)
           const target_arc = deploy_space(target, t_middle, arc_size)
-          console.log()
           return ribbon({
             source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad},
             target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
           })
         } else {
-          
+          return arc({
+            outerRadius: min_rad+50,
+            innerRadius: min_rad+(edfJSON[to].size/10000000),
+            startAngle: t_middle-(arc_size/2),
+            endAngle: t_middle+(arc_size/2),
+            padAngle: 0,
+            padRadius: 0,
+            cornerRadius: 1})
         }
       })
       .style('stroke', function(d, i) { 
@@ -93,6 +99,8 @@ function draw(edfJSON) {
 
   d3.selectAll("path")
     .on("mouseover", function(){
+      // d3.selectAll("path").style("opacity", 0.02)
+      d3.select(this).style("opacity", 1)
       const ticker = d3.select(this).attr("id")
       console.log(ticker)
       // d3.select(this)
