@@ -77,6 +77,8 @@ function draw(edfJSON) {
             source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad},
             target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
           })
+        } else {
+          
         }
       })
       .style('stroke', function(d, i) { 
@@ -88,6 +90,28 @@ function draw(edfJSON) {
       .attr("stroke-width", '0.1')
       .attr('id', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}});
   }
+
+  d3.selectAll("path")
+    .on("mouseover", function(){
+      const ticker = d3.select(this).attr("id")
+      console.log(ticker)
+      // d3.select(this)
+        // .style("background-color", "orange");
+      // Get current event info
+      // console.log(d3.event);
+      // Get x & y co-ordinates
+      // console.log(d3.mouse(this));
+    })
+    .on("mouseout", function(){
+      console.log('out')
+      // d3.select(this)
+      //   .style("background-color", "steelblue")
+    }); 
+}
+
+
+function write_ticker(ticker) {
+
 }
 
 
