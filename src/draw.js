@@ -3,6 +3,7 @@ function draw(edfJSON) {
   const ribbon = d3.ribbonArrow();
   const sum_sizes = make_angular(edfJSON);
   let edfARR = Object.keys(edfJSON)
+  const delegation_color = '#ccc';
 
   let svg = d3.select(".container").append("svg");
 
@@ -27,7 +28,10 @@ function draw(edfJSON) {
     .data(edfARR)
     .enter()
     .append("path")
-    .attr("fill", function(d, i) { return color(i); })
+    .attr("fill", function(d, i) {
+      edfJSON[d].color = color(i);
+      return color(i); 
+    })
     .style("opacity", 1)
     .attr("d", function(d, i){
       return arc({
@@ -50,7 +54,12 @@ function draw(edfJSON) {
       .data(Object.keys(from))
       .enter()
       .append("path")
-      .attr("fill", function(d, i) { return color(i); })
+      .attr("fill", function(d, i) { 
+        if (d === 'new_delegation') {
+          return delegation_color;
+        }
+        return edfJSON[d].color; 
+      })
       .style("opacity", 0.5)
       .attr("d", function(from_id) {
         if (!(from_id === 'new_delegation')) {
@@ -58,17 +67,25 @@ function draw(edfJSON) {
           const target = edfJSON[from_id];
           const s_middle = arc_middle(source.arc);
           const t_middle = arc_middle(target.arc);
-          const arc_size = (from[from_id] / sum_sizes) * (Math.PI * 2);
+          const dele_size = from[from_id]
+          if (dele_size === 0) {return null}
+          const arc_size = (dele_size / sum_sizes) * (Math.PI * 2);
           const source_arc = deploy_space(source, s_middle, arc_size)
           const target_arc = deploy_space(target, t_middle, arc_size)
           return ribbon({
-            source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad-2},
+            source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad},
             target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
           })
         }
       })
-      .style('stroke', function(d, i) { return color(i); })
-      .attr("stroke-width", '0.1');
+      .style('stroke', function(d, i) { 
+        if (d === 'new_delegation') {
+          return delegation_color;
+        }
+        return edfJSON[d].color; 
+      })
+      .attr("stroke-width", '0.1')
+      .attr('id', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}});
   }
 }
 
@@ -85,20 +102,30 @@ function deploy_space(obj, middle, new_size) {
     end = middle + half;
     taken_anticlock = half;
     taken_clock = half;
+    if (!taken_clock || !taken_anticlock) {console.log(11111)}
+    if (!taken_clock || !taken_anticlock) {debugger}
   } else {
     if (obj.taken_space.anticlock <= obj.taken_space.clock) {
       // if thhere is more space available on the anticlock side of the pool's arc
       end = middle - obj.taken_space.anticlock;
       start = end - new_size;
       taken_anticlock = obj.taken_space.anticlock + new_size;
+      taken_clock = obj.taken_space.clock
+      if (!taken_anticlock) {console.log(22222)}
+      if (!taken_anticlock) {debugger}
     } else {
       // if thhere is more space available on the clock side of the pool's arc
       start = middle + obj.taken_space.clock;
       end = start + new_size;
       taken_clock = obj.taken_space.clock + new_size;
+      taken_anticlock = obj.taken_space.anticlock
+      if (!taken_clock) {console.log(33333)}
+      if (!taken_clock) {debugger}
     }
   };
   obj.taken_space = {anticlock: taken_anticlock, clock: taken_clock}
+  // console.log({start: start, end: end})
+  if (!start) {debugger}
   return {start: start, end: end}
 }
 
