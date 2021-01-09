@@ -3,9 +3,10 @@ function draw(edfJSON) {
   const ribbon = d3.ribbonArrow();
   const sum_sizes = make_angular(edfJSON);
   let edfARR = Object.keys(edfJSON)
-  const delegation_color = '#ccc';
+  const delegation_color = '#69db8f';
 
-  let svg = d3.select(".container").append("svg");
+  let svg = d3.select(".container")
+    .append("svg")
 
   let width = document.getElementsByClassName("container")[0].offsetWidth;
   let height = document.getElementsByClassName("container")[0].offsetHeight ;
@@ -34,7 +35,7 @@ function draw(edfJSON) {
 
   svg.attr("width", '100%')
     .attr("height",  '100%')
-    .style("background", "#fff");
+    .style("background", "#f3fefa");
 
   let g = svg.append('g')
     .attr("transform", `translate(${width / 2}, ${height / 2})`);

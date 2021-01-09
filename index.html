@@ -1,35 +1,90 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap" rel="stylesheet"><meta charset="utf-8">
+    <title>Lake</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-inputs.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
 
-<html>
-<head>
-	<title>chord</title>
-	<style>
-		.container {
-			flex: 1;
-			height:auto;
-			flex-direction: column;
-			justify-content: center;
-			align-items: stretch;
-			align-content: stretch;
-		}
-		body {
-			margin:0px;
-			height:100vh;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: stretch;
-			align-content: stretch;
-		}
-	</style>
-</head>
-<body>
-	<div id='ticker'>TICKER</div>
-	<div class='container'>
-	</div>
-	<script src="https://d3js.org/d3.v6.min.js"></script>
-	<script src='src/fetch.js' defer></script>
-	<script src='src/draw.js' defer></script>
-	<script src='src/index.js' defer></script>
-</body>
+		<header>
+			<div class='container'>
+				<div class='container'>
+					<div id='logo'>
+						<div>
+							<span style="color: #a0a0a0;">Black</span>
+							<br>SWAN<br>
+							<span style="color: #a0a0a0;">Pool</span>
+						</div>
+					</div>
+
+				</div>
+				<div id='epoch_dash'>
+					<div class='container'>
+						<div id='epoch'>epoch</div>
+						<button class='button epoch_button' id='prev'><</button>
+						<button class='button epoch_button' id='next'>></button>
+					</div>
+					<div class='values_container'>
+						<!-- <div class='value'>Delegations: 180.0k</div>
+						<div class='value'>Rewarded: 1.3M</div>
+						<div class='value'>Rewarded Pools: 505</div>
+						<div class='value'>₳D₳ Delegated: 18.0B</div>
+                        <div class='value'>₳D₳ Rewarded: 18.0B</div>
+                        <div class='value'>New/Re Delegations: 3050</div> -->
+					</div>
+				</div>
+			</div>
+		</header>
+		<main>
+    	<div class='container'>
+    		<div class='container'>
+    			<div class='histo_container'></div>
+    			<div class='tabs_container'>
+    				<div class='insert'>
+                        <form id='add_stake'>
+                            <div class="autocomplete">
+    					       <input type='textfield' placeholder='stakeu1...'>
+                            </div>
+    					   <button type='submit' class='button_small'><b>+</b></button>
+                        </form>
+    				</div>
+    				<div class='insert'>
+                        <form autocomplete="off" id='add_pool'>
+                            <div class="autocomplete">
+    						  <input id='insert_pool' type='text' placeholder='TICKR or pool1cuxntl7p...'>
+                            </div>
+    						<button type='submit' class='button_small'><b>+</b></button>
+                        </form>
+    				</div>
+                    <span id='tabs_target'>
+                    </span>
+    			</div>
+    		</div>
+    		<div class='chart_container'>
+  				<svg width="500px" height="500px" style="background-color:none">
+                    <style>.watermark { font-size:60px; fill:rgba(30,30,30,0.05); }</style>
+                    <style>.watermark2 { font-size:50px; fill:rgba(30,30,30,0.07); }</style>
+                    <style>.small { font-size:50px; fill:rgba(30,30,30,0.3); }</style>
+  					<circle cx="250" cy="250" r="200" stroke="#58d" stroke-width="3" fill="rgba(200,200,250,0.5)" /> 
+                    <text x="20" y="260" class="watermark" transform="rotate(-23)">ÜBER</text>
+                    <text x="40" y="300" class="watermark" transform="rotate(-23)">COOL</text>
+                    <text x="10" y="330" class="watermark2" transform="rotate(-25)">Chart!!</text>
+                    <text x="30" y="430" class="small" transform="rotate(-30)">(soon)</text>
+  				</svg>
+    		</div>
+    	</div>
+		</main>
+		<footer>delegate to black SWAN pool &hearts;</footer>
+
+    <script src="./src/numeral.js"></script>
+    <script src="./src/autocomplete.js"></script>
+    <script src="./src/user.js"></script>
+    <script src="./src/epochs.js"></script>
+    <script src="./src/index.js"></script>
+    <script src="./src/tabs.js"></script>
+  </body>
 </html>
