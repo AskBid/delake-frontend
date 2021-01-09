@@ -10,7 +10,15 @@ function draw(edfJSON) {
   let width = document.getElementsByClassName("container")[0].offsetWidth;
   let height = document.getElementsByClassName("container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
-  let min_rad = parseInt((minimum_dimension/2))-50
+  let inner_rad = parseInt((minimum_dimension/2))-70
+  let outer_rad = inner_rad + (inner_rad / 10)
+  let top_rad = (pool_id) => {
+    const max_outer_rad_addition = (outer_rad - inner_rad) * 1.5;
+    const biggest_pool_guess = 80000000;
+    const rad_addition = (edfJSON[pool_id].size / biggest_pool_guess) * max_outer_rad_addition;
+    return outer_rad + rad_addition
+  }
+
 
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
@@ -26,7 +34,7 @@ function draw(edfJSON) {
 
   draw_chord()
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
-  add_listeners() 
+  add_listeners()
 
   function draw_chord() {
     g.selectAll("path .chord")
@@ -40,8 +48,8 @@ function draw(edfJSON) {
     .style("opacity", 1)
     .attr("d", function(d, i){
       return arc({
-        outerRadius: min_rad+(edfJSON[d].size/10000000),
-        innerRadius: min_rad,
+        outerRadius: top_rad(d),
+        innerRadius: inner_rad,
         startAngle: edfJSON[d].arc.start,
         endAngle: edfJSON[d].arc.end,
         padAngle: 0,
@@ -60,6 +68,11 @@ function draw(edfJSON) {
     })
   }
 
+  function draw_ticker_text(arc, outerRad) {
+    arc = {start: 0.5142400547250957, end: 0.5282908522391158};
+    outerRad = 278.0373616;
+
+  }
 
   function draw_ribbon(to, from) {
     g.selectAll("path .ribbon")
@@ -85,13 +98,15 @@ function draw(edfJSON) {
           const source_arc = deploy_space(source, s_middle, arc_size)
           const target_arc = deploy_space(target, t_middle, arc_size)
           return ribbon({
-            source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: min_rad},
-            target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: min_rad}
+            source: {startAngle: source_arc.start, endAngle: source_arc.end, radius: inner_rad},
+            target: {startAngle: target_arc.start, endAngle: target_arc.end, radius: inner_rad}
           })
         } else {
+          // if it is a "new_delegation"
+          const top_rad_ = top_rad(to)
           return arc({
-            outerRadius: min_rad+50,
-            innerRadius: min_rad+(edfJSON[to].size/10000000),
+            outerRadius: top_rad_ + 20,
+            innerRadius: top_rad_ + 5,
             startAngle: t_middle-(arc_size/2),
             endAngle: t_middle+(arc_size/2),
             padAngle: 0,
@@ -106,12 +121,12 @@ function draw(edfJSON) {
         return edfJSON[d].color; 
       })
       .attr("stroke-width", 0.1)
-      .attr("stroke-opacity", 0.7)
+      .attr("stroke-opacity", 1)
       // .attr('info', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}})
       .attr("class", "ribbon")
       .attr("from", from => from)
       .attr("to", to)
-    }
+  } 
 
   function add_listeners() {
     d3.selectAll(".chord")
@@ -131,17 +146,17 @@ function draw(edfJSON) {
         .style("fill", 'red')
         .style("opacity", 1)
         .style("stroke-width", 0.5)
-        .attr("stroke-opacity", 1)
+        // .attr("stroke-opacity", 1)
         .attr("stroke", 'red')
 
       d3.selectAll(`path[to="${id}"]`)
         // .style("fill", 'blue')
         .style("stroke-width", 0.5)
-        .attr("stroke-opacity", 1)
+        // .attr("stroke-opacity", 1)
         .style("opactiy", 1)
         // .style("stroke", 'blue')
 
-      document.getElementById('ticker').innerHTML = ticker
+      // document.getElementById('ticker').innerHTML = ticker
       // d3.select(this)
         // .style("background-color", "orange");
       // Get current event info
@@ -160,7 +175,7 @@ function draw(edfJSON) {
 
       d3.selectAll(".ribbon")
         .style("opacity", 0.5)
-        .attr("stroke-opacity", 0.7)
+        .attr("stroke-opacity", 1)
       
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", color)
