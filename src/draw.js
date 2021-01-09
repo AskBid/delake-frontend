@@ -11,13 +11,20 @@ function draw(edfJSON) {
   let height = document.getElementsByClassName("container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
   let inner_rad = parseInt((minimum_dimension/2))-70
-  let outer_rad = inner_rad + (inner_rad / 10)
+  let outer_rad = inner_rad + (inner_rad / 16)
   let top_rad = (pool_id) => {
-    const max_outer_rad_addition = (outer_rad - inner_rad) * 1.5;
+    const max_outer_rad_addition = (outer_rad - inner_rad) * 1;
     const biggest_pool_guess = 80000000;
     const rad_addition = (edfJSON[pool_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
   }
+
+  const pool_opacity = 1;
+  const pool_stroke_width = 0.2;
+  const pool_stroke_opacity = 0.7;
+  const ribbon_opacity = 0.5;
+  const ribbon_stroke_width = 0.2;
+  const ribbon_stroke_opacity = 1;
 
 
   //https://github.com/d3/d3-scale-chromatic
@@ -41,11 +48,11 @@ function draw(edfJSON) {
     .data(edfARR)
     .enter()
     .append("path")
-    .attr("fill", function(d, i) {
+    .style("fill", function(d, i) {
       edfJSON[d].color = color(i);
       return color(i); 
     })
-    .style("opacity", 1)
+    .style("opacity", pool_opacity)
     .attr("d", function(d, i){
       return arc({
         outerRadius: top_rad(d),
@@ -57,8 +64,8 @@ function draw(edfJSON) {
         cornerRadius: 1})
       })
     .style('stroke', 'black')
-    .attr("stroke-width", '0.1')
-    .attr("stroke-opacity", '0.7')
+    .style("stroke-width", pool_stroke_width)
+    .style("stroke-opacity", pool_stroke_opacity)
     .attr("tick", d => edfJSON[d].ticker)
     .attr("pool_id", d => d)
     .attr("class", "chord")
@@ -71,7 +78,6 @@ function draw(edfJSON) {
   function draw_ticker_text(arc, outerRad) {
     arc = {start: 0.5142400547250957, end: 0.5282908522391158};
     outerRad = 278.0373616;
-
   }
 
   function draw_ribbon(to, from) {
@@ -85,7 +91,7 @@ function draw(edfJSON) {
         }
         return edfJSON[d].color; 
       })
-      .style("opacity", 0.5)
+      .style("opacity", ribbon_opacity)
       .attr("d", function(from_id) {
         const target = edfJSON[to];
         const t_middle = arc_middle(target.arc);
@@ -120,8 +126,8 @@ function draw(edfJSON) {
         }
         return edfJSON[d].color; 
       })
-      .attr("stroke-width", 0.1)
-      .attr("stroke-opacity", 1)
+      .style("stroke-width", ribbon_stroke_width)
+      .style("stroke-opacity", ribbon_stroke_opacity)
       // .attr('info', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}})
       .attr("class", "ribbon")
       .attr("from", from => from)
@@ -131,7 +137,6 @@ function draw(edfJSON) {
   function add_listeners() {
     d3.selectAll(".chord")
     .on("mouseover", function(){
-      // d3.selectAll("path").style("opacity", 0.02)
       d3.select(this)
         .style("fill", 'red')
 
@@ -139,22 +144,22 @@ function draw(edfJSON) {
       const id = d3.select(this).attr("pool_id")
 
       d3.selectAll(".ribbon")
-        .style("opacity", 0.01)
-        .attr("stroke-opacity", 0.01)
+        .style("opacity", 0)
+        .style("stroke-opacity", 0)
 
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", 'red')
         .style("opacity", 1)
-        .style("stroke-width", 0.5)
-        // .attr("stroke-opacity", 1)
-        .attr("stroke", 'red')
+        .style("stroke-width", 1)
+        .style("stroke-opacity", 1)
+        .style("stroke", 'red')
+        // .style("stroke-opacity", 1)
 
       d3.selectAll(`path[to="${id}"]`)
+        .style("stroke-width", 1)
+        .style("stroke-opacity", 1)
+        .style("opacity", 1)
         // .style("fill", 'blue')
-        .style("stroke-width", 0.5)
-        // .attr("stroke-opacity", 1)
-        .style("opactiy", 1)
-        // .style("stroke", 'blue')
 
       // document.getElementById('ticker').innerHTML = ticker
       // d3.select(this)
@@ -174,22 +179,23 @@ function draw(edfJSON) {
       const id = d3.select(this).attr("pool_id")
 
       d3.selectAll(".ribbon")
-        .style("opacity", 0.5)
-        .attr("stroke-opacity", 1)
+        .style("opacity", ribbon_opacity)
+        .style("stroke-opacity", ribbon_stroke_opacity)
+        .style("stroke-width", ribbon_stroke_width)
       
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", color)
+        .style("stroke", color)
+        // .style("stroke-width", ribbon_stroke_width)
+        // .style("stroke-opacity", 0.7)
         // .style("opacity", 0.1)
-        .style("stroke-width", 0.1)
-        // .attr("stroke-opacity", 0.7)
-        .attr("stroke", color)
 
-      d3.selectAll(`path[to="${id}"]`)
+      // d3.selectAll(`path[to="${id}"]`)
         // .style("fill", function(d) {debugger;})
-        .style("stroke-width", 0.1)
-        // .attr("stroke-opacity", 0.7)
-        .style("opactiy", 0.5)
+        // .style("stroke-opacity", 0.7)
+        // .style("opactiy", 0.5)
         // .style("stroke", color)
+
       // d3.select(this)
       //   .style("background-color", "steelblue")
     }); 
