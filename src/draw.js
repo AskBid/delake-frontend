@@ -24,7 +24,7 @@ function draw(edfJSON) {
   let g = svg.append('g')
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  g.selectAll("path #chord")
+  g.selectAll("path .chord")
     .data(edfARR)
     .enter()
     .append("path")
@@ -43,14 +43,21 @@ function draw(edfJSON) {
         padRadius: 0,
         cornerRadius: 1})
       })
-    .style('stroke', 'rgba(0,0,0,0.7)')
+    .style('stroke', 'black')
     .attr("stroke-width", '0.1')
-    .attr("id", d => edfJSON[d].ticker)
+    .attr("stroke-opacity", '0.7')
+    .attr("tick", d => edfJSON[d].ticker)
+    .attr("pool_id", d => d)
+    .attr("class", "chord")
+    .attr("color", function(d, i) {
+      edfJSON[d].color = color(i);
+      return color(i); 
+    })
 
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
 
   function draw_ribbon(to, from) {
-    g.selectAll("path #ribbon")
+    g.selectAll("path .ribbon")
       .data(Object.keys(from))
       .enter()
       .append("path")
@@ -94,24 +101,36 @@ function draw(edfJSON) {
         return edfJSON[d].color; 
       })
       .attr("stroke-width", '0.1')
-      .attr('id', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}});
+      .attr("stroke-opacity", '0.7')
+      .attr('info', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}})
+      .attr("class", "ribbon")
+      .attr("from", from => from)
+      .attr("to", to)
+      .attr("color", function(d, i) { 
+        if (d === 'new_delegation') {
+          return delegation_color;
+        }
+        return edfJSON[d].color; 
+      })
   }
 
-  d3.selectAll("path")
+  d3.selectAll(".chord")
     .on("mouseover", function(){
       // d3.selectAll("path").style("opacity", 0.02)
-      d3.select(this).style("opacity", 1)
-      const ticker = d3.select(this).attr("id")
-      console.log(ticker)
+      d3.select(this).style("fill", 'red')
+      const ticker = d3.select(this).attr("pool_id")
+
+      document.getElementById('ticker').innerHTML = ticker
       // d3.select(this)
         // .style("background-color", "orange");
       // Get current event info
       // console.log(d3.event);
       // Get x & y co-ordinates
-      // console.log(d3.mouse(this));
+      console.log(d3.mouse(this));
     })
     .on("mouseout", function(){
-      console.log('out')
+      const color = d3.select(this).attr("color")
+      d3.select(this).style('fill', color)
       // d3.select(this)
       //   .style("background-color", "steelblue")
     }); 
