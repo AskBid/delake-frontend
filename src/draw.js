@@ -24,7 +24,12 @@ function draw(edfJSON) {
   let g = svg.append('g')
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  g.selectAll("path .chord")
+  draw_chord()
+  edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
+  add_listeners() 
+
+  function draw_chord() {
+    g.selectAll("path .chord")
     .data(edfARR)
     .enter()
     .append("path")
@@ -53,8 +58,8 @@ function draw(edfJSON) {
       edfJSON[d].color = color(i);
       return color(i); 
     })
+  }
 
-  edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
 
   function draw_ribbon(to, from) {
     g.selectAll("path .ribbon")
@@ -100,25 +105,41 @@ function draw(edfJSON) {
         }
         return edfJSON[d].color; 
       })
-      .attr("stroke-width", '0.1')
-      .attr("stroke-opacity", '0.7')
-      .attr('info', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}})
+      .attr("stroke-width", 0.1)
+      .attr("stroke-opacity", 0.7)
+      // .attr('info', function(from) {if (from != 'new_delegation') {return `${from} ${edfJSON[from].ticker}`}})
       .attr("class", "ribbon")
       .attr("from", from => from)
       .attr("to", to)
-      .attr("color", function(d, i) { 
-        if (d === 'new_delegation') {
-          return delegation_color;
-        }
-        return edfJSON[d].color; 
-      })
-  }
+    }
 
-  d3.selectAll(".chord")
+  function add_listeners() {
+    d3.selectAll(".chord")
     .on("mouseover", function(){
       // d3.selectAll("path").style("opacity", 0.02)
-      d3.select(this).style("fill", 'red')
-      const ticker = d3.select(this).attr("pool_id")
+      d3.select(this)
+        .style("fill", 'red')
+
+      const ticker = d3.select(this).attr("ticker")
+      const id = d3.select(this).attr("pool_id")
+
+      d3.selectAll(".ribbon")
+        .style("opacity", 0.01)
+        .attr("stroke-opacity", 0.01)
+
+      d3.selectAll(`path[from="${id}"]`)
+        .style("fill", 'red')
+        .style("opacity", 1)
+        .style("stroke-width", 0.5)
+        .attr("stroke-opacity", 1)
+        .attr("stroke", 'red')
+
+      d3.selectAll(`path[to="${id}"]`)
+        // .style("fill", 'blue')
+        .style("stroke-width", 0.5)
+        .attr("stroke-opacity", 1)
+        .style("opactiy", 1)
+        // .style("stroke", 'blue')
 
       document.getElementById('ticker').innerHTML = ticker
       // d3.select(this)
@@ -126,14 +147,38 @@ function draw(edfJSON) {
       // Get current event info
       // console.log(d3.event);
       // Get x & y co-ordinates
-      console.log(d3.mouse(this));
+      // console.log(d3.mouse(this));
     })
     .on("mouseout", function(){
       const color = d3.select(this).attr("color")
-      d3.select(this).style('fill', color)
+
+      d3.select(this)
+        .style("fill", color)
+
+      const ticker = d3.select(this).attr("ticker")
+      const id = d3.select(this).attr("pool_id")
+
+      d3.selectAll(".ribbon")
+        .style("opacity", 0.5)
+        .attr("stroke-opacity", 0.7)
+      
+      d3.selectAll(`path[from="${id}"]`)
+        .style("fill", color)
+        // .style("opacity", 0.1)
+        .style("stroke-width", 0.1)
+        // .attr("stroke-opacity", 0.7)
+        .attr("stroke", color)
+
+      d3.selectAll(`path[to="${id}"]`)
+        // .style("fill", function(d) {debugger;})
+        .style("stroke-width", 0.1)
+        // .attr("stroke-opacity", 0.7)
+        .style("opactiy", 0.5)
+        // .style("stroke", color)
       // d3.select(this)
       //   .style("background-color", "steelblue")
     }); 
+  }
 }
 
 
