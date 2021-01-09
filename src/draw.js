@@ -11,9 +11,9 @@ function draw(edfJSON) {
   let height = document.getElementsByClassName("container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
   let inner_rad = parseInt((minimum_dimension/2))-70
-  let outer_rad = inner_rad + (inner_rad / 16)
+  let outer_rad = inner_rad + (inner_rad / 20)
   let top_rad = (pool_id) => {
-    const max_outer_rad_addition = (outer_rad - inner_rad) * 1;
+    const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
     const biggest_pool_guess = 80000000;
     const rad_addition = (edfJSON[pool_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
@@ -23,7 +23,7 @@ function draw(edfJSON) {
   const pool_stroke_width = 0.2;
   const pool_stroke_opacity = 0.7;
   const ribbon_opacity = 0.5;
-  const ribbon_stroke_width = 0.2;
+  const ribbon_stroke_width = 0.1;
   const ribbon_stroke_opacity = 1;
 
 
@@ -149,16 +149,16 @@ function draw(edfJSON) {
 
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", 'red')
+        .style("stroke", 'red')
         .style("opacity", 1)
         .style("stroke-width", 1)
         .style("stroke-opacity", 1)
-        .style("stroke", 'red')
         // .style("stroke-opacity", 1)
 
       d3.selectAll(`path[to="${id}"]`)
-        .style("stroke-width", 1)
-        .style("stroke-opacity", 1)
         .style("opacity", 1)
+        .style("stroke-width", 2)
+        .style("stroke-opacity", 1)
         // .style("fill", 'blue')
 
       // document.getElementById('ticker').innerHTML = ticker
