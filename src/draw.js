@@ -8,10 +8,11 @@ function draw(edfJSON) {
   let width = document.getElementsByClassName("chart_container")[0].offsetWidth;
   let height = document.getElementsByClassName("chart_container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
-  let inner_rad = parseInt((minimum_dimension/2))-50
-  let outer_rad = inner_rad + (inner_rad / 20)
+  let inner_rad = parseInt((minimum_dimension/2))-60
+  let outer_rad = inner_rad + (inner_rad / 22)
+  const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
+  let max_rad = outer_rad + max_outer_rad_addition
   let top_rad = (pool_id) => {
-    const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
     const biggest_pool_guess = 80000000;
     const rad_addition = (edfJSON[pool_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
@@ -37,7 +38,7 @@ function draw(edfJSON) {
     .style("background", "#fff");
 
   let g = svg.append('g')
-    .attr("transform", `translate(${outer_rad+50}, ${outer_rad+50})`);
+    .attr("transform", `translate(${outer_rad+50}, ${outer_rad+40})`);
 
   draw_chord()
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
@@ -57,7 +58,6 @@ function draw(edfJSON) {
       const obj = edfJSON[d]
       if (obj.size > 50000000) {
         draw_ticker_text(obj, 'chart_ticker', color(i));
-        console.log(obj.size)
       }
       return arc({
         outerRadius: top_rad(d),
@@ -67,7 +67,7 @@ function draw(edfJSON) {
         padAngle: 0,
         padRadius: 0,
         cornerRadius: 1})
-      })
+    })
     .style('stroke', 'black')
     .style("stroke-width", pool_stroke_width)
     .style("stroke-opacity", pool_stroke_opacity)
@@ -83,7 +83,7 @@ function draw(edfJSON) {
   function draw_ticker_text(obj, class_type, color) {
     const rotation = rad_to_deg(arc_middle(obj.arc))
     g.append('text')
-    .attr("x", outer_rad + 15)
+    .attr("x", max_rad + 13)
     .attr("y", 2.2)
     .attr('class', class_type)
     .style('fill', color)
@@ -122,8 +122,8 @@ function draw(edfJSON) {
           // if it is a "new_delegation"
           const top_rad_ = top_rad(to)
           return arc({
-            outerRadius: top_rad_ + 20,
-            innerRadius: top_rad_ + 5,
+            outerRadius: top_rad_ + 8,
+            innerRadius: top_rad_ + 3,
             startAngle: t_middle-(arc_size/2),
             endAngle: t_middle+(arc_size/2),
             padAngle: 0,
@@ -256,8 +256,7 @@ function arc_middle(arc) {
   return arc.start + ((arc.end - arc.start)/2)
 }
 
-function rad_to_deg(radians)
-{
+function rad_to_deg(radians) {
   var pi = Math.PI;
   return radians * (180/pi);
 }
