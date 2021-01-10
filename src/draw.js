@@ -5,7 +5,7 @@ function draw(edfJSON) {
   let edfARR = Object.keys(edfJSON)
   const delegation_color = '#69db8f';
 
-  let svg = d3.select(".container")
+  let svg = d3.select(".chart_container")
     .append("svg")
 
   let width = document.getElementsByClassName("container")[0].offsetWidth;

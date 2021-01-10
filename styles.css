@@ -1,6 +1,6 @@
 body {
 	/*background-color: #9bd;*/
-	background-color: #eee;
+	background-color: white;
 	font-family: 'Roboto', sans-serif;
 	font-size: 13px;
 	margin: 0;
@@ -31,7 +31,7 @@ header > .container > .container {
 }
 
 #logo {
-	flex: 6 0 200px;
+	flex: 0 0 200px;
 	/*border: 1px solid;*/
 }
 
@@ -45,36 +45,30 @@ header > .container > .container {
   color: #e4e2ff;
 }
 
-#id {
+/*#id {
 	flex: 1;
 }
-
+*/
 #donate {
-	flex: 1;
+	flex: 0 0 100px;
 	padding: 0px 15px 0px 30px;
 }
 
-#epoch_dash {
-	background-color: rgba(200,200,200,0.5);
-	display: flex;
-	padding: 5px;
-	/*border: 1px solid #88a;*/
-	flex-direction: row;
-	flex: 1 0;
-	flex-wrap: wrap;
-	justify-content: center;
-	text-align: center;	
+#donate {
+	border: 1px solid;
+	background-color: #fff;
+	border-radius: 5px;
+	margin: 0px 20px 0px 0px;
+	padding: 0px 4px;
+	color: black;
+	cursor:pointer;
+	/*width: 60px;*/
 }
 
-#epoch_dash > .container{
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-content: center;
-	align-items: center;
-	/*border: 1px solid;*/
-	flex: 2 0 300px;
+#donate:hover {
+	background-color: #f3fefa;
 }
+
 
 .values_container {
 	margin: 0px 0px 0px 30px;
@@ -104,10 +98,10 @@ header > .container > .container {
 }
 
 #epoch {
-	text-align: right;
+	text-align: center;
 	font-size: 30px;
 	margin: 0px 20px;
-	flex: 0 1 200px;
+	flex: 1 1 200px;
 }
 
 .value {	
@@ -135,7 +129,7 @@ main > .container {
 	align-content: stretch;*/
 }
 
-main > .container > .container {
+/*main > .container > .container {
 	min-height: 300px;
 	display: flex;
 	flex-direction: row;
@@ -143,7 +137,7 @@ main > .container > .container {
 	flex: 2;
 	align-content: stretch;
 	justify-content: center;
-}
+}*/
 
 .instructions_title {
 	font-weight: 700;
@@ -163,67 +157,19 @@ main > .container > .container {
 	/*border: 1px solid;*/
 }
 
-.histo_container {
-	/*background-color: rgba(150,150,150,0.11);*/
-	/*min-height: 500px;*/
-	width: 100px;
-	flex: 0 1 200px;
-	/*border: 1px solid;*/
-}
-
 .tabs_container {
 	/*background-color: orange;*/
 	/*width: 300px;	*/
-	margin: 10px 0px 0px 0px;
+	margin: 10px 0px 0px 20px;
 	display: flex;
 	flex-wrap: wrap;
-	flex: 5 0;
-	justify-content: center;
+	flex: 0 0;
+	justify-content: flex-end;
 	align-items: flex-start;
 	align-content: flex-start;
 	/*border: 1px solid;*/
 }
 
-.insert {
-	width: 290px;
-	margin: 6px 0px 0px 0px;
-	display: flex;
-  align-content: stretch;
-  align-items: stretch;
-}
-
-.insert > form {
-	display: flex;
-	justify-content: space-around;
-	align-content: stretch;
-  align-items: stretch;
-	flex: 1;
-}
-
-/*.insert > form > input {
-	flex: 1;
-	width: 100%;
-	margin: 0px;
-	padding: 0px;
-}*/
-
-.tab {
-	background-color: rgba(200,189,250,0.4);
-	margin: 10px 10px 0px 10px;
-	border: none;
-	border-radius: 10px;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
-	align-content: flex-start;
-	align-items: flex-end;
-}
-
-.dice {
-	fill: black;
-  stroke: black;	
-  stroke-width: 20px;
-}
 
 .sub_tab {
 	background-color: white;
@@ -235,25 +181,39 @@ main > .container > .container {
 	display: flex;
 }
 
-.sub_tab + .sub_tab {
+.delegation_tab {
+	background-color: white;
+	margin: 0px 5px 5px 5px;
+	padding: 5px 5px 5px 5px;
+	border: 1px solid;
+	border-radius: 7px;
+	display: flex;
 	width: 255px;
-	border-color: rgba(20,20,20,0.6);;
+	border-color: rgba(20,20,20,0.6);
 }
 
-.sub_tab + .sub_tab .pool_ticker {
+.from_to_column {
+	flex: 1;
+	/*border: 1px solid;*/
+	display: flex;
+	flex-direction: column;
+}
+
+.delegation_tab .pool_ticker {
 	font-size: 1em;
 	color: rgba(20,20,20,0.6);
 }
 
-.tab_title {
-	box-sizing: border-box;
-	/*color: rgba(200,189,250,0.8);*/
-	color: rgba(250,250,250,1);
-	font-size: 0.9em;
-	width: 100%;
-	padding: 0px 0px 0px 10px;	
-/*	position: relative;	
-  top: -10px;  */
+.tab_label {
+	margin: 2px 5px;
+	color: #777;
+	/*flex:1 0 50px;*/
+	text-align: right;
+	vertical-align: middle;
+}
+
+.from_to_column > .tab_label {
+	text-align: center;
 }
 
 a.stake_link {
@@ -261,20 +221,56 @@ a.stake_link {
 	font-weight: 700;
 	color: rgba(250,250,250,1);
 }
+
 a:hover.stake_link {
 	text-decoration: none;
 	font-weight: bold;
 	color: rgba(255, 153, 0,0.9);
 }
 
+.tab_value {
+	padding: 2px 3px 2px 2px;
+	flex:1 0 80px;
+	text-align: right;
+	border-radius: 3px;
+	background-color: rgba(150,150,150,0.1);
+	font-family: 'Roboto Mono';
+	font-size: 0.96em;
+}
+
+#out > .tab_value {
+	padding: 2px 3px 2px 2px;
+	flex:1 0;
+	text-align: right;
+	border-radius: 3px;
+	background-color: rgba(150,150,150,0.1);
+	font-family: 'Roboto Mono';
+	font-size: 0.96em;
+}
+
+#in > .tab_value {
+	padding: 2px 3px 2px 2px;
+	flex:1 0;
+	text-align: right;
+	border-radius: 3px;
+	background-color: rgba(150,150,150,0.1);
+	font-family: 'Roboto Mono';
+	font-size: 0.96em;
+}
+
 .pool_ticker {
-	display: inline;
 	font-weight: bold;
 	font-size: 1.16em;
 	text-align: left;
-	flex:1;
+	flex:1 ;
+	height: 100%;
 	padding: 0px 10px;
-	margin: 3px 0px 0px 0px;
+	margin: 9px 0px 0px 0px;
+}
+
+.from_to_column > .pool_ticker {
+	position: relative;
+  top: 5px;
 }
 
 .pool_ticker > a {
@@ -335,6 +331,11 @@ a:hover, .sub_tab + .sub_tab .pool_ticker > a:hover {
 .tab_pool_values {
 	text-align: left;
 	flex:1 1 58px;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	vertical-align: middle;
 }
 
 .tab_values {
@@ -349,23 +350,6 @@ a:hover, .sub_tab + .sub_tab .pool_ticker > a:hover {
 	align-items: center;
 }
 
-.tab_value {
-	padding: 2px 3px 2px 2px;
-	flex:1 0 80px;
-	text-align: right;
-	border-radius: 3px;
-	background-color: rgba(150,150,150,0.1);
-	font-family: 'Roboto Mono';
-	font-size: 0.96em;
-}
-
-.tab_label {
-	margin: 2px 5px;
-	color: #777;
-	flex:1 0 50px;
-	text-align: right;
-	vertical-align: middle;
-}
 
 #login_area {
 	display: flex;
@@ -427,20 +411,7 @@ button[disabled]{
 	font-size: 20px;
 }
 
-#donate {
-	border: 1px solid;
-	background-color: #9bd;;
-	border-radius: 5px;
-	margin: 0px 9px;
-	padding: 0px 4px;
-	color: black;
-	cursor:pointer;
-	/*width: 60px;*/
-}
 
-#donate:hover {
-	background-color: lightblue;
-}
 
 #username_label {
 	font-size: 20px;

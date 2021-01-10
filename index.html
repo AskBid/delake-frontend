@@ -20,71 +20,55 @@
 							<span style="color: #a0a0a0;">Pool</span>
 						</div>
 					</div>
-
-				</div>
-				<div id='epoch_dash'>
-					<div class='container'>
-						<div id='epoch'>epoch</div>
-						<button class='button epoch_button' id='prev'><</button>
-						<button class='button epoch_button' id='next'>></button>
-					</div>
-					<div class='values_container'>
-						<!-- <div class='value'>Delegations: 180.0k</div>
-						<div class='value'>Rewarded: 1.3M</div>
-						<div class='value'>Rewarded Pools: 505</div>
-						<div class='value'>₳D₳ Delegated: 18.0B</div>
-                        <div class='value'>₳D₳ Rewarded: 18.0B</div>
-                        <div class='value'>New/Re Delegations: 3050</div> -->
-					</div>
+    				<div id='epoch'>epoch 240</div>
+                    <button id='donate'>Donate&hearts;</button>
 				</div>
 			</div>
 		</header>
+
 		<main>
     	<div class='container'>
-    		<div class='container'>
-    			<div class='histo_container'></div>
-    			<div class='tabs_container'>
-    				<div class='insert'>
-                        <form id='add_stake'>
-                            <div class="autocomplete">
-    					       <input type='textfield' placeholder='stakeu1...'>
-                            </div>
-    					   <button type='submit' class='button_small'><b>+</b></button>
-                        </form>
-    				</div>
-    				<div class='insert'>
-                        <form autocomplete="off" id='add_pool'>
-                            <div class="autocomplete">
-    						  <input id='insert_pool' type='text' placeholder='TICKR or pool1cuxntl7p...'>
-                            </div>
-    						<button type='submit' class='button_small'><b>+</b></button>
-                        </form>
-    				</div>
-                    <span id='tabs_target'>
-                    </span>
-    			</div>
-    		</div>
+
+			<div class='tabs_container'>
+                <div class="sub_tab">
+                    <div class="tab_pool_values">
+                        <div class="pool_ticker"><a href="https://cardanoscan.io/pool/pool1vafsg5t78rnx3qr3fv7ys9h50pnvxqhd4l8tj629l5zk7tc39ch" target="_blank">SKY2</a></div>
+                    </div> 
+                    <div class="tab_values">
+                        <div class="row">
+                            <div class="tab_label">size:</div>
+                            <div class="tab_value">7,537 ₳</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="delegation_tab">
+                    <div class='from_to_column' id='in'>
+                        <div class='tab_label'>IN:</div>
+                        <div class="pool_ticker">SWAN</div>
+                        <div class="tab_value">7,537 ₳</div>
+                        <div class="pool_ticker">DIGI</div>
+                        <div class="tab_value">7,537 ₳</div>
+                    </div>
+                    <div class='from_to_column' id='out'>
+                        <div class='tab_label'>OUT:</div>
+                        <div class="pool_ticker">SWAN</div>
+                        <div class="tab_value">7,537 ₳</div>
+                        <div class="pool_ticker">DIGI</div>
+                        <div class="tab_value">7,537 ₳</div>
+                    </div>
+                </div>
+			</div>
+
     		<div class='chart_container'>
-  				<svg width="500px" height="500px" style="background-color:none">
-                    <style>.watermark { font-size:60px; fill:rgba(30,30,30,0.05); }</style>
-                    <style>.watermark2 { font-size:50px; fill:rgba(30,30,30,0.07); }</style>
-                    <style>.small { font-size:50px; fill:rgba(30,30,30,0.3); }</style>
-  					<circle cx="250" cy="250" r="200" stroke="#58d" stroke-width="3" fill="rgba(200,200,250,0.5)" /> 
-                    <text x="20" y="260" class="watermark" transform="rotate(-23)">ÜBER</text>
-                    <text x="40" y="300" class="watermark" transform="rotate(-23)">COOL</text>
-                    <text x="10" y="330" class="watermark2" transform="rotate(-25)">Chart!!</text>
-                    <text x="30" y="430" class="small" transform="rotate(-30)">(soon)</text>
-  				</svg>
     		</div>
     	</div>
 		</main>
+
 		<footer>delegate to black SWAN pool &hearts;</footer>
 
-    <script src="./src/numeral.js"></script>
-    <script src="./src/autocomplete.js"></script>
-    <script src="./src/user.js"></script>
-    <script src="./src/epochs.js"></script>
-    <script src="./src/index.js"></script>
-    <script src="./src/tabs.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src='src/fetch.js' defer></script>
+    <script src='src/draw.js' defer></script>
+    <script src='src/index.js' defer></script>
   </body>
 </html>
