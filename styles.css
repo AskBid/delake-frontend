@@ -153,7 +153,7 @@ main > .container {
 .chart_container {
 	/*background-color: rgba(150,150,150,0.11);*/
 	min-height: 400px;
-	flex: 2 0 200px;
+	flex: 2 0 400px;
 	/*border: 1px solid;*/
 }
 

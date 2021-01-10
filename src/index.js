@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 	getEDF(1)
-	// draw(json)
+	// $.getJSON('assets/edf240.json', function(data) {
+	//   draw(data)
+	// });
 })
 
 

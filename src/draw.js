@@ -8,10 +8,10 @@ function draw(edfJSON) {
   let svg = d3.select(".chart_container")
     .append("svg")
 
-  let width = document.getElementsByClassName("container")[0].offsetWidth;
-  let height = document.getElementsByClassName("container")[0].offsetHeight ;
+  let width = document.getElementsByClassName("chart_container")[0].offsetWidth;
+  let height = document.getElementsByClassName("chart_container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
-  let inner_rad = parseInt((minimum_dimension/2))-70
+  let inner_rad = parseInt((minimum_dimension/2))-20
   let outer_rad = inner_rad + (inner_rad / 20)
   let top_rad = (pool_id) => {
     const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
@@ -35,7 +35,7 @@ function draw(edfJSON) {
 
   svg.attr("width", '100%')
     .attr("height",  '100%')
-    .style("background", "#f3fefa");
+    .style("background", "#fff");
 
   let g = svg.append('g')
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
