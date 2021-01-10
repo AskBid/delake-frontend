@@ -82,13 +82,24 @@ function draw(edfJSON) {
 
   function draw_ticker_text(obj, class_type, color) {
     const rotation = rad_to_deg(arc_middle(obj.arc))
-    g.append('text')
-    .attr("x", max_rad + 13)
-    .attr("y", 2.2)
-    .attr('class', class_type)
-    .style('fill', color)
-    .text(obj.ticker)
-    .attr('transform', `rotate(${rotation-90} 0 0)`)
+    if (rotation < 180) {
+      g.append('text')
+      .attr("x", max_rad + 13)
+      .attr("y", 2.2)
+      .attr('class', class_type)
+      .style('fill', color)
+      .text(obj.ticker)
+      .attr('transform', `rotate(${rotation-90} 0 0)`)
+    } else {
+      g.append('text')
+      // .attr("x", -(max_rad + 35))
+      .attr("x", max_rad + 13)
+      .attr("y", 2.2)
+      .attr('class', class_type)
+      .style('fill', color)
+      .text(obj.ticker)
+      .attr('transform', `rotate(${rotation-90} 0 0)`)
+    }
   }
 
   function draw_ribbon(to, from) {
