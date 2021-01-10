@@ -37,7 +37,7 @@ function draw(edfJSON) {
     .style("background", "#fff");
 
   let g = svg.append('g')
-    .attr("transform", `translate(${outer_rad+25}, ${outer_rad+25})`);
+    .attr("transform", `translate(${outer_rad+50}, ${outer_rad+50})`);
 
   draw_chord()
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
@@ -54,11 +54,16 @@ function draw(edfJSON) {
     })
     .style("opacity", pool_opacity)
     .attr("d", function(d, i){
+      const obj = edfJSON[d]
+      if (obj.size > 50000000) {
+        draw_ticker_text(obj, 'chart_ticker', color(i));
+        console.log(obj.size)
+      }
       return arc({
         outerRadius: top_rad(d),
         innerRadius: inner_rad,
-        startAngle: edfJSON[d].arc.start,
-        endAngle: edfJSON[d].arc.end,
+        startAngle: obj.arc.start,
+        endAngle: obj.arc.end,
         padAngle: 0,
         padRadius: 0,
         cornerRadius: 1})
@@ -75,14 +80,15 @@ function draw(edfJSON) {
     })
   }
 
-  function draw_ticker_text(arc, class_type) {
-    const rotation = rad_to_deg(arc_middle(arc))
+  function draw_ticker_text(obj, class_type, color) {
+    const rotation = rad_to_deg(arc_middle(obj.arc))
     g.append('text')
-    .attr("x", outer_rad + 8)
-    .attr("y", (13*0.7))
+    .attr("x", outer_rad + 15)
+    .attr("y", 2.2)
     .attr('class', class_type)
-    .text('SWAN')
-    .attr('transform', `rotate(${rotation} 0 0)`)
+    .style('fill', color)
+    .text(obj.ticker)
+    .attr('transform', `rotate(${rotation-90} 0 0)`)
   }
 
   function draw_ribbon(to, from) {
