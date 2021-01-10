@@ -5,13 +5,10 @@ function draw(edfJSON) {
   let edfARR = Object.keys(edfJSON)
   const delegation_color = '#69db8f';
 
-  let svg = d3.select(".chart_container")
-    .append("svg")
-
   let width = document.getElementsByClassName("chart_container")[0].offsetWidth;
   let height = document.getElementsByClassName("chart_container")[0].offsetHeight ;
   let minimum_dimension = Math.min(width, height);
-  let inner_rad = parseInt((minimum_dimension/2))-20
+  let inner_rad = parseInt((minimum_dimension/2))-50
   let outer_rad = inner_rad + (inner_rad / 20)
   let top_rad = (pool_id) => {
     const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
@@ -27,6 +24,8 @@ function draw(edfJSON) {
   const ribbon_stroke_width = 0.1;
   const ribbon_stroke_opacity = 1;
 
+  let svg = d3.select(".chart_container")
+  .append("svg")
 
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
@@ -38,7 +37,7 @@ function draw(edfJSON) {
     .style("background", "#fff");
 
   let g = svg.append('g')
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    .attr("transform", `translate(${outer_rad+25}, ${outer_rad+25})`);
 
   draw_chord()
   edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
@@ -76,9 +75,14 @@ function draw(edfJSON) {
     })
   }
 
-  function draw_ticker_text(arc, outerRad) {
-    arc = {start: 0.5142400547250957, end: 0.5282908522391158};
-    outerRad = 278.0373616;
+  function draw_ticker_text(arc, class_type) {
+    const rotation = rad_to_deg(arc_middle(arc))
+    g.append('text')
+    .attr("x", outer_rad + 8)
+    .attr("y", (13*0.7))
+    .attr('class', class_type)
+    .text('SWAN')
+    .attr('transform', `rotate(${rotation} 0 0)`)
   }
 
   function draw_ribbon(to, from) {
@@ -246,6 +250,11 @@ function arc_middle(arc) {
   return arc.start + ((arc.end - arc.start)/2)
 }
 
+function rad_to_deg(radians)
+{
+  var pi = Math.PI;
+  return radians * (180/pi);
+}
 
 function make_angular(edfJSON) {
   const sum = Object.keys(edfJSON).reduce((a, k) => a + edfJSON[k].size, 0);

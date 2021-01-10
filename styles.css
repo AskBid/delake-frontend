@@ -152,8 +152,8 @@ main > .container {
 
 .chart_container {
 	/*background-color: rgba(150,150,150,0.11);*/
-	min-height: 400px;
-	flex: 2 0 400px;
+	min-height: 600px;
+	flex: 2 0 600px;
 	/*border: 1px solid;*/
 }
 
@@ -230,8 +230,16 @@ a.stake_link {
 }
 
 .pool_ticker > span {
+	font-size: 0.7em;
+	font-weight: 200;
+	position: relative;
+	bottom: 3px;
+}
+
+.chart_ticker {
 	font-size: 0.8em;
 	font-weight: 200;
+	fill: rgba(50,50,50,0.6);
 	position: relative;
 	bottom: 3px;
 }
@@ -482,6 +490,7 @@ header {
 main {
 	margin: 0px;
 	flex: 1;
+	position:sticky;
 }
 
 footer {
@@ -490,6 +499,7 @@ footer {
 	text-align: center;
 	height: 30px;
 	flex: 0;
+	position:static;
 }
 
 /*@media only screen and (max-width: 600px) {
