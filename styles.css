@@ -104,6 +104,10 @@ header > .container > .container {
 	flex: 1 1 200px;
 }
 
+.chord {
+	cursor: pointer;
+}
+
 .value {	
 	margin: 5px;
 	/*min-height: 30px;*/
@@ -239,7 +243,16 @@ a.stake_link {
 .chart_ticker {
 	font-size: 0.5em;
 	font-weight: 200;
-	fill: rgba(50,50,50,0.6);
+	fill: rgba(50,50,50,0.8);
+	position: relative;
+	bottom: 3px;
+	/*cursor: pointer;*/
+}
+
+.chart_ticker_select {
+	font-size: 0.5em;
+	font-weight: bold;
+	fill: rgba(50,50,50,0.8);
 	position: relative;
 	bottom: 3px;
 }
@@ -287,7 +300,7 @@ a:hover.stake_link {
 	flex:1 ;
 	height: 100%;
 	padding: 0px 10px;
-	margin: 9px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
 }
 
 .from_to_column > .pool_ticker {

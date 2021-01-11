@@ -12,9 +12,9 @@ function draw(edfJSON) {
   let outer_rad = inner_rad + (inner_rad / 22)
   const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
   let max_rad = outer_rad + max_outer_rad_addition
-  let top_rad = (pool_id) => {
+  let top_rad = (ph_id) => {
     const biggest_pool_guess = 80000000;
-    const rad_addition = (edfJSON[pool_id].size / biggest_pool_guess) * max_outer_rad_addition;
+    const rad_addition = (edfJSON[ph_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
   }
 
@@ -41,7 +41,7 @@ function draw(edfJSON) {
     .attr("transform", `translate(${outer_rad+50}, ${outer_rad+40})`);
 
   draw_chord()
-  edfARR.forEach(pool_id => draw_ribbon(pool_id, edfJSON[pool_id].from))
+  edfARR.forEach(ph_id => draw_ribbon(ph_id, edfJSON[ph_id].from))
   add_listeners()
 
   function draw_chord() {
@@ -72,7 +72,7 @@ function draw(edfJSON) {
     .style("stroke-width", pool_stroke_width)
     .style("stroke-opacity", pool_stroke_opacity)
     .attr("tick", d => edfJSON[d].ticker)
-    .attr("pool_id", d => d)
+    .attr("ph_id", d => d)
     .attr("class", "chord")
     .attr("color", function(d, i) {
       edfJSON[d].color = color(i);
@@ -87,18 +87,24 @@ function draw(edfJSON) {
       .attr("x", max_rad + 13)
       .attr("y", 2.2)
       .attr('class', class_type)
+      .attr('ticker', obj.ticker)
+      // .attr('ph_id', id)
+      // .attr('color', color)
       .style('fill', color)
       .text(obj.ticker)
       .attr('transform', `rotate(${rotation-90} 0 0)`)
     } else {
       g.append('text')
-      // .attr("x", -(max_rad + 35))
-      .attr("x", max_rad + 13)
+      .attr("x", -(max_rad + 13))
       .attr("y", 2.2)
       .attr('class', class_type)
+      .attr('ticker', obj.ticker)
+      // .attr('ph_id', id)
+      // .attr('color', color)
       .style('fill', color)
       .text(obj.ticker)
-      .attr('transform', `rotate(${rotation-90} 0 0)`)
+      .attr('transform', `rotate(${rotation+90} 0 0)`)
+      .attr("text-anchor", "end")
     }
   }
 
@@ -163,7 +169,9 @@ function draw(edfJSON) {
         .style("fill", 'red')
 
       const ticker = d3.select(this).attr("ticker")
-      const id = d3.select(this).attr("pool_id")
+      const id = d3.select(this).attr("ph_id")
+      // debugger
+      draw_ticker_text(edfJSON[id], 'chart_ticker_select', 'red')
 
       d3.selectAll(".ribbon")
         .style("opacity", 0)
@@ -174,7 +182,7 @@ function draw(edfJSON) {
         .style("stroke", 'red')
         .style("opacity", 1)
         .style("stroke-width", 1)
-        .style("stroke-opacity", 1)
+        .style("stroke-opacity", 0.5)
         // .style("stroke-opacity", 1)
 
       d3.selectAll(`path[to="${id}"]`)
@@ -198,7 +206,9 @@ function draw(edfJSON) {
         .style("fill", color)
 
       const ticker = d3.select(this).attr("ticker")
-      const id = d3.select(this).attr("pool_id")
+      const id = d3.select(this).attr("ph_id")
+
+      d3.selectAll('.chart_ticker_select').remove()
 
       d3.selectAll(".ribbon")
         .style("opacity", ribbon_opacity)
