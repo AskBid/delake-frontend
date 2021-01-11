@@ -213,9 +213,19 @@ function draw(edfJSON) {
       const ticker = d3.select(this).attr("tick")
       const id = d3.select(this).attr("ph_id")
 
+      const balance = calculate_balance(id, edfJSON)
+
       document.getElementById('select_pool_ticker').innerHTML = ticker;
       document.getElementById('pool_size').innerHTML = `${numeral(edfJSON[id].size).format('0,0')} ₳`;
-      document.getElementById('pool_balance').innerHTML = `123 ₳`;
+      document.getElementById('pool_balance').innerHTML = `${numeral(balance).format('0,0')} ₳`;
+      if (balance < 0) {
+        d3.select('#pool_balance')
+        .style('color', 'red')
+      } else {
+        d3.select('#pool_balance')
+        .style('color', 'green')
+      }
+      
       // d3.selectAll(`path[to="${id}"]`)
         // .style("fill", function(d) {debugger;})
         // .style("stroke-opacity", 0.7)
@@ -229,8 +239,24 @@ function draw(edfJSON) {
 }
 
 
-function calculate_balance(id) {
+function calculate_balance(id, edfJSON) {
+  let sum_to = 0
+  let sum_from = 0
 
+  console.log(edfJSON[id])
+
+  Object.keys(edfJSON[id].from).forEach((from_key)=>{
+    sum_from += edfJSON[id].from[from_key]
+  })
+
+  Object.keys(edfJSON).forEach((key) => {
+    Object.keys(edfJSON[key].from).forEach((from_key)=>{
+      if (from_key === id) {
+        sum_to += edfJSON[key].from[from_key]
+      }
+    })
+  })
+  return sum_from - sum_to
 }
 
 
