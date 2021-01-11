@@ -168,9 +168,9 @@ function draw(edfJSON) {
       d3.select(this)
         .style("fill", 'red')
 
-      const ticker = d3.select(this).attr("ticker")
+      // const ticker = d3.select(this).attr("ticker")
       const id = d3.select(this).attr("ph_id")
-      // debugger
+
       draw_ticker_text(edfJSON[id], 'chart_ticker_select', 'red')
 
       d3.selectAll(".ribbon")
@@ -183,21 +183,11 @@ function draw(edfJSON) {
         .style("opacity", 1)
         .style("stroke-width", 1)
         .style("stroke-opacity", 0.5)
-        // .style("stroke-opacity", 1)
 
       d3.selectAll(`path[to="${id}"]`)
         .style("opacity", 1)
         .style("stroke-width", 2)
         .style("stroke-opacity", 1)
-        // .style("fill", 'blue')
-
-      // document.getElementById('ticker').innerHTML = ticker
-      // d3.select(this)
-        // .style("background-color", "orange");
-      // Get current event info
-      // console.log(d3.event);
-      // Get x & y co-ordinates
-      // console.log(d3.mouse(this));
     })
     .on("mouseout", function(){
       const color = d3.select(this).attr("color")
@@ -205,7 +195,7 @@ function draw(edfJSON) {
       d3.select(this)
         .style("fill", color)
 
-      const ticker = d3.select(this).attr("ticker")
+      // const ticker = d3.select(this).attr("ticker")
       const id = d3.select(this).attr("ph_id")
 
       d3.selectAll('.chart_ticker_select').remove()
@@ -218,10 +208,14 @@ function draw(edfJSON) {
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", color)
         .style("stroke", color)
-        // .style("stroke-width", ribbon_stroke_width)
-        // .style("stroke-opacity", 0.7)
-        // .style("opacity", 0.1)
+    })
+    .on("click", function(){
+      const ticker = d3.select(this).attr("tick")
+      const id = d3.select(this).attr("ph_id")
 
+      document.getElementById('select_pool_ticker').innerHTML = ticker;
+      document.getElementById('pool_size').innerHTML = `${numeral(edfJSON[id].size).format('0,0')} ₳`;
+      document.getElementById('pool_balance').innerHTML = `123 ₳`;
       // d3.selectAll(`path[to="${id}"]`)
         // .style("fill", function(d) {debugger;})
         // .style("stroke-opacity", 0.7)
@@ -235,7 +229,7 @@ function draw(edfJSON) {
 }
 
 
-function write_ticker(ticker) {
+function calculate_balance(id) {
 
 }
 
