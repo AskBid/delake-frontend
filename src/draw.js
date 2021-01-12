@@ -225,15 +225,6 @@ function draw(edfJSON) {
         d3.select('#pool_balance')
         .style('color', 'green')
       }
-      
-      // d3.selectAll(`path[to="${id}"]`)
-        // .style("fill", function(d) {debugger;})
-        // .style("stroke-opacity", 0.7)
-        // .style("opactiy", 0.5)
-        // .style("stroke", color)
-
-      // d3.select(this)
-      //   .style("background-color", "steelblue")
     }); 
   }
 }
@@ -242,8 +233,6 @@ function draw(edfJSON) {
 function calculate_balance(id, edfJSON) {
   let sum_to = 0
   let sum_from = 0
-
-  console.log(edfJSON[id])
 
   Object.keys(edfJSON[id].from).forEach((from_key)=>{
     sum_from += edfJSON[id].from[from_key]
