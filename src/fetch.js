@@ -24,7 +24,7 @@ function getEDF(id) {
 	  })
 	  .then(resp=>resp.json())
 	  .then(obj=> {
-	  	console.log(obj)
+	  	// console.log(obj)
 	  	draw(obj)
 	  })
 }

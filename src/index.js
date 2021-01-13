@@ -1,10 +1,91 @@
+class AppStorage {
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
-	getEDF(6)
-	// $.getJSON('assets/edf241.json', function(data) {
-	//   draw(data)
-	// });
+	// getEDF(6)
+
+	AppStorage.epoch = new Epoch(210,241)
+	AppStorage.epoch.checkEpochButtonState()
+
+	render()
+
+	button = document.getElementById('prev');
+	button.addEventListener('click', function(event) {
+		event.preventDefault();
+		AppStorage.epoch.changeEpoch(this);
+	});
+	button = document.getElementById('next');
+	button.addEventListener('click', function(event) {
+		event.preventDefault();
+		AppStorage.epoch.changeEpoch(this);
+	});
 })
 
+function render() {
+	$.getJSON(`assets/edf${AppStorage.epoch.current}.json`, function(data) {
+	  draw(data)
+	});
+}
+
+class Epoch {
+	constructor(min, max) {
+		this.min = min;
+		this.max = max;
+		this.current = max;
+	}
+
+	move(move) {
+		if (this.current + move <= this.max && this.current + move >= this.min) {
+			this.current += move
+		}
+	}
+
+	changeEpoch(element) {
+		let move = element.id === 'next' ? 1 : -1
+		this.move(move);
+		this.displayEpoch();
+		this.checkEpochButtonState();
+		render();
+	}
+
+	displayEpoch() {
+		if (this) {
+			document.getElementById('writing').innerHTML = `epoch ${this.current}`;
+		} else {
+			document.getElementById('writing').innerHTML = `null epoch!`;
+		}
+	}
+
+	checkEpochButtonState() {
+		if (this.current === this.max) {
+				document.getElementById("next").disabled = true;
+		} else {
+				document.getElementById("next").disabled = false;
+		}
+		if (this.current === this.min) {
+			document.getElementById("prev").disabled = true;
+		} else {
+			document.getElementById("prev").disabled = false;
+		}
+	}
+
+	// static fetchEpochInfo() {
+	// 	return fetch(`${AppStorage.BACKEND_URL()}/epoch`,{
+	//     method:'GET',
+	//     headers: {
+	//       "Content-Type":"application/json",
+	//       "Accept": "application/json"
+	//     },
+	//   })
+	//   .then(resp=>resp.json())
+	//   .then(obj=> {
+	//   	AppStorage.epoch = new Epoch(obj.min, obj.max, obj.max);
+	//   	AppStorage.epoch.displayEpoch()
+	//   	AppStorage.epoch.checkEpochButtonState()
+	//   })
+	// }
+}
 
 // let json = {
 //   '30':{'from':{'32':7483},

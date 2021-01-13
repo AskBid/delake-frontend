@@ -5,18 +5,44 @@ function draw(edfJSON) {
   let edfARR = Object.keys(edfJSON)
   const delegation_color = '#69db8f';
 
+  //positioning and proportions START
   let width = document.getElementsByClassName("chart_container")[0].offsetWidth;
-  let height = document.getElementsByClassName("chart_container")[0].offsetHeight ;
+  let height = document.getElementsByClassName("chart_container")[0].offsetHeight;
+
   let minimum_dimension = Math.min(width, height);
-  let inner_rad = parseInt((minimum_dimension/2))-60
+  let textRatio = 10 / 340;
+
+  let zoom = 0.65;
+  if (width < 700) {
+    zoom = 0.90
+  }
+  let inner_rad = parseInt(((minimum_dimension*zoom)/2))
+  let ticker_size = `${parseInt(textRatio*inner_rad)}px`
   let outer_rad = inner_rad + (inner_rad / 22)
   const max_outer_rad_addition = (outer_rad - inner_rad) * 0.5;
   let max_rad = outer_rad + max_outer_rad_addition
+
   let top_rad = (ph_id) => {
     const biggest_pool_guess = 80000000;
     const rad_addition = (edfJSON[ph_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
   }
+
+  let tab_width = document.getElementsByClassName("delegation_tab")[0].offsetWidth;
+  let chart_top_padding = 80;
+
+  if (((width - (max_rad*2)) / 2) < 230) {
+    let addition = width < 800 ? 70 : 0
+    d3.select("#filler")
+      .style('min-height', `${(max_rad*2)+(chart_top_padding/2)+addition}px`);
+  } else {
+    d3.select("#filler")
+      .style('min-height', '0px');
+  }
+
+  let center_translation_h = width/2;
+  let center_translation_v = max_rad + chart_top_padding
+  //positioning and proportions END
 
   const pool_opacity = 1;
   const pool_stroke_width = 0.2;
@@ -25,8 +51,9 @@ function draw(edfJSON) {
   const ribbon_stroke_width = 0.1;
   const ribbon_stroke_opacity = 1;
 
+  d3.select(".chart_container").select('svg').remove()
   let svg = d3.select(".chart_container")
-  .append("svg")
+    .append("svg")
 
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
@@ -38,7 +65,7 @@ function draw(edfJSON) {
     .style("background", "#fff");
 
   let g = svg.append('g')
-    .attr("transform", `translate(${outer_rad+50}, ${outer_rad+40})`);
+    .attr("transform", `translate(${center_translation_h}, ${center_translation_v})`);
 
   draw_chord()
   edfARR.forEach(ph_id => draw_ribbon(ph_id, edfJSON[ph_id].from))
@@ -91,6 +118,7 @@ function draw(edfJSON) {
       // .attr('ph_id', id)
       // .attr('color', color)
       .style('fill', color)
+      .style('font-size', ticker_size)
       .text(obj.ticker)
       .attr('transform', `rotate(${rotation-90} 0 0)`)
     } else {
@@ -99,6 +127,7 @@ function draw(edfJSON) {
       .attr("y", 2.2)
       .attr('class', class_type)
       .attr('ticker', obj.ticker)
+      .style('font-size', ticker_size)
       // .attr('ph_id', id)
       // .attr('color', color)
       .style('fill', color)
@@ -185,9 +214,11 @@ function draw(edfJSON) {
         .style("stroke-opacity", 0.5)
 
       d3.selectAll(`path[to="${id}"]`)
+        .style("fill", 'blue')
+        .style("stroke", 'blue')
         .style("opacity", 1)
-        .style("stroke-width", 2)
-        .style("stroke-opacity", 1)
+        .style("stroke-width", 1)
+        .style("stroke-opacity", 0.5)
     })
     .on("mouseout", function(){
       const color = d3.select(this).attr("color")
@@ -208,12 +239,20 @@ function draw(edfJSON) {
       d3.selectAll(`path[from="${id}"]`)
         .style("fill", color)
         .style("stroke", color)
+      let paths = document.querySelectorAll(`path[to='${id}']`);
+      paths.forEach((path)=>{
+        let col = path.getAttribute('fill')
+        path.style.fill = col
+        path.style.stroke = col
+      })
+
     })
     .on("click", function(){
       const ticker = d3.select(this).attr("tick")
       const id = d3.select(this).attr("ph_id")
+      let tos = {}
 
-      const balance = calculate_balance(id, edfJSON)
+      const balance = calculate_balance(id, edfJSON, tos)
 
       document.getElementById('select_pool_ticker').innerHTML = ticker;
       document.getElementById('pool_size').innerHTML = `${numeral(edfJSON[id].size).format('0,0')} ₳`;
@@ -225,12 +264,35 @@ function draw(edfJSON) {
         d3.select('#pool_balance')
         .style('color', 'green')
       }
+      document.getElementById('out').getElementsByTagName('span')[0].innerHTML = '';
+      document.getElementById('in').getElementsByTagName('span')[0].innerHTML = '';
+      deployFromTo(tos, 'out', edfJSON)
+      deployFromTo(edfJSON[id].from, 'in', edfJSON)
     }); 
   }
 }
 
 
-function calculate_balance(id, edfJSON) {
+function deployFromTo(obj, type, edfJSON) {
+  Object.keys(obj).forEach((key)=>{
+    function appendString(string) {
+      var div = document.createElement('div');
+      div.innerHTML = string.trim();
+      document.getElementById(type)
+        .getElementsByTagName('span')[0]
+        .appendChild(div.firstChild); 
+    }
+    if (key === 'new_delegation') {
+      appendString(`<div class="pool_ticker" style='color:green'>New Delegats</div>`)
+    } else {
+      appendString(`<div class="pool_ticker">${edfJSON[key].ticker}</div>`)
+    }
+    appendString(`<div class="tab_value">${numeral(obj[key]).format('0,0')} ₳</div>`)
+  })
+}
+
+
+function calculate_balance(id, edfJSON, tos) {
   let sum_to = 0
   let sum_from = 0
 
@@ -242,10 +304,23 @@ function calculate_balance(id, edfJSON) {
     Object.keys(edfJSON[key].from).forEach((from_key)=>{
       if (from_key === id) {
         sum_to += edfJSON[key].from[from_key]
+        tos[key] = edfJSON[key].from[from_key]
       }
     })
   })
   return sum_from - sum_to
+}
+
+function getInIds(id, edfJSON) {
+  let arr = []
+  Object.keys(edfJSON).forEach((key) => {
+    Object.keys(edfJSON[key].from).forEach((from_key)=>{
+      if (from_key === id) {
+        arr.push(key)
+      }
+    })
+  })
+  return arr
 }
 
 

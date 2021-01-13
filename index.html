@@ -3,73 +3,56 @@
   <head>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap" rel="stylesheet"><meta charset="utf-8">
-    <title>Lake</title>
+    <title>Delegation Lake</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles-inputs.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-
-		<header>
-			<div class='container'>
-				<div class='container'>
-					<div id='logo'>
-						<div>
-							<span style="color: #a0a0a0;">Black</span>
-							<br>SWAN<br>
-							<span style="color: #a0a0a0;">Pool</span>
-						</div>
-					</div>
-    				<div id='epoch'>epoch 241</div>
-                    <a href='donate.html'><button id='donate'>Donate&hearts;</button></a>
-				</div>
-			</div>
-		</header>
-
-		<main>
-    	<div class='container'>
-
-			<div class='tabs_container'>
-                <div style="padding:0px 15px;color:#aaa;">click on a pool rectangle to visualise info.</div>
-                <div class="sub_tab">
-                    <div class="tab_pool_values">
-                        <div class="pool_ticker" id='select_pool_ticker'></div>
-                    </div> 
-                    <div class="tab_values">
-                        <div class="row">
-                            <div class="tab_label">size:</div>
-                            <div class="tab_value" id='pool_size'>₳</div>
-                        </div>
-                        <div class="row">
-                            <div class="tab_label" >D.balance:</div>
-                            <div class="tab_value" id='pool_balance'>₳</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- <div class="delegation_tab"> -->
-<!--                     <div class='from_to_column' id='in'>
-                        <div class='tab_label'>IN:</div>
-                        <div class='tab_label'>coming soon...</div> -->
-                        <!-- <div class="pool_ticker">SWAN</div>
-                        <div class="tab_value">7,537 ₳</div>
-                        <div class="pool_ticker">DIGI</div>
-                        <div class="tab_value">7,537 ₳</div> -->
-<!--                     </div>
-                    <div class='from_to_column' id='out'>
-                        <div class='tab_label'>OUT:</div>
-                        <div class='tab_label'>coming soon...</div> -->
-                        <!-- <div class="pool_ticker">SWAN</div>
-                        <div class="tab_value">7,537 ₳</div>
-                        <div class="pool_ticker">DIGI</div>
-                        <div class="tab_value">7,537 ₳</div> -->
-                    <!-- </div> -->
-                <!-- </div> -->
-			</div>
             
-    		<div class='chart_container'>
+            <div class='chart_container'>
+                <div id='head'>
+                    
+        			<div class='tabs_container'>
+                        <div class="sub_tab">
+                            <div class="tab_pool_values">
+                                <div class="pool_ticker" id='select_pool_ticker'></div>
+                            </div> 
+                            <div class="tab_values">
+                                <div class="row">
+                                    <div class="tab_label">size:</div>
+                                    <div class="tab_value" id='pool_size'>₳</div>
+                                </div>
+                                <div class="row">
+                                    <div class="tab_label" >D.balance:</div>
+                                    <div class="tab_value" id='pool_balance'>₳</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding:0px 15px;color:#aaa;">click on a pool rectangle to visualise info.</div>
+                        <div id='filler'></div>
+                        <div class="delegation_tab">
+                            <div class='from_to_column' id='in'>
+                                <div class='tab_label' style='color:rgba(30,50,190,0.98);;'><b>IN:</b></div>
+                                <span>
+                                </span>
+                            </div>
+                            <div class='from_to_column' id='out'>
+                                <div class='tab_label' style='color:rgba(200,50,50,0.98);;'><b>OUT:</b></div>
+                                <span>
+                                </span>
+                            </div>
+                        </div>
+        			</div>
+                    <div id='epoch'>
+                        <button class='button' id='prev'><</button>
+                        <div id='writing'>epoch 241</div>
+                        <button class='button' id='next'>></button>
+                    </div>
+                    <div id='donate_container'><a href='donate.html'><button id='donate'>Donate&hearts;</button></a></div>
+                </div>
     		</div>
-    	</div>
-		</main>
+
 
 		<footer>delegate to black SWAN pool &hearts;</footer>
 
