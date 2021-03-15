@@ -1,9 +1,16 @@
-function draw(edfJSON) { 
+let ticker_limit = 50000000
+
+function draw(edfJSON, range) {
+  console.log(edfJSON )
+  let filtered_edfJSON = {...edfJSON}
+  if (range) { filtered_edfJSON = filterPools(edfJSON) }
+  console.log(filtered_edfJSON )
   const arc = d3.arc();
   const ribbon = d3.ribbonArrow();
-  const sum_sizes = make_angular(edfJSON);
-  let edfARR = Object.keys(edfJSON)
+  const sum_sizes = make_angular(filtered_edfJSON);
+  let edfARR = Object.keys(filtered_edfJSON)
   const delegation_color = '#69db8f';
+  const filtered_pools_color = 'rgba(150,150,150,0.3)';
 
   //positioning and proportions START
   let width = document.getElementsByClassName("chart_container")[0].offsetWidth;
@@ -24,32 +31,34 @@ function draw(edfJSON) {
 
   let top_rad = (ph_id) => {
     const biggest_pool_guess = 80000000;
-    const rad_addition = (edfJSON[ph_id].size / biggest_pool_guess) * max_outer_rad_addition;
+    const rad_addition = (filtered_edfJSON[ph_id].size / biggest_pool_guess) * max_outer_rad_addition;
     return outer_rad + rad_addition
   }
 
   let tab_width = document.getElementsByClassName("delegation_tab")[0].offsetWidth;
   let chart_top_padding = 80;
+  let gap_to_fix_position_when_on_small_width = 0;
 
   if (((width - (max_rad*2)) / 2) < 230) {
-    let addition = width < 800 ? 70 : 0
-    d3.select("#filler")
-      .style('min-height', `${(max_rad*2)+(chart_top_padding/2)+addition}px`);
+    let addition = width < 800 ? 20 : 0
+    d3.select(".delegation_tab")
+      .style('margin-top', `${(max_rad*2)+(chart_top_padding/2)+addition}px`);
+      gap_to_fix_position_when_on_small_width = 40
   } else {
-    d3.select("#filler")
-      .style('min-height', '0px');
+    d3.select(".delegation_tab")
+      .style('margin-top', '0px');
   }
 
   let center_translation_h = width/2;
-  let center_translation_v = max_rad + chart_top_padding
+  let center_translation_v = max_rad + chart_top_padding + gap_to_fix_position_when_on_small_width
   //positioning and proportions END
 
-  const pool_opacity = 1;
+  const pool_opacity = 0.6;
   const pool_stroke_width = 0.2;
-  const pool_stroke_opacity = 0.7;
-  const ribbon_opacity = 0.5;
+  const pool_stroke_opacity = 0.6;
+  const ribbon_opacity = 0.4;
   const ribbon_stroke_width = 0.1;
-  const ribbon_stroke_opacity = 1;
+  const ribbon_stroke_opacity = 0.6;
 
   d3.select(".chart_container").select('svg').remove()
   let svg = d3.select(".chart_container")
@@ -58,7 +67,7 @@ function draw(edfJSON) {
   //https://github.com/d3/d3-scale-chromatic
   //https://bl.ocks.org/EfratVil/2bcc4bf35e28ae789de238926ee1ef05
   var color = d3.scaleOrdinal().domain(edfARR)
-    .range(d3.schemePastel1);
+    .range(d3.schemeTableau10);
 
   svg.attr("width", '100%')
     .attr("height",  '100%')
@@ -68,7 +77,7 @@ function draw(edfJSON) {
     .attr("transform", `translate(${center_translation_h}, ${center_translation_v})`);
 
   draw_chord()
-  edfARR.forEach(ph_id => draw_ribbon(ph_id, edfJSON[ph_id].from))
+  edfARR.forEach(ph_id => draw_ribbon(ph_id, filtered_edfJSON[ph_id].from))
   add_listeners()
 
   function draw_chord() {
@@ -77,17 +86,25 @@ function draw(edfJSON) {
     .enter()
     .append("path")
     .style("fill", function(d, i) {
-      edfJSON[d].color = color(i);
-      return color(i); 
+      if (d === 'excluded') {
+        filtered_edfJSON[d].color = filtered_pools_color
+        return filtered_pools_color; 
+      } else {
+        filtered_edfJSON[d].color = color(i);
+        return color(i); 
+      }
     })
     .style("opacity", pool_opacity)
     .attr("d", function(d, i){
-      const obj = edfJSON[d]
-      if (obj.size > 50000000) {
-        draw_ticker_text(obj, 'chart_ticker', color(i));
+      const obj = filtered_edfJSON[d]
+      if (obj.size > ticker_limit || Object.keys(filtered_edfJSON).length < 140) {
+        let colortick = d === 'excluded' ? 'black' : filtered_edfJSON[d].color
+        draw_ticker_text(obj, 'chart_ticker', colortick);
       }
+      let outerRadius = top_rad(d)
+      if (d === 'excluded') {outerRadius = inner_rad}
       return arc({
-        outerRadius: top_rad(d),
+        outerRadius: outerRadius,
         innerRadius: inner_rad,
         startAngle: obj.arc.start,
         endAngle: obj.arc.end,
@@ -98,12 +115,11 @@ function draw(edfJSON) {
     .style('stroke', 'black')
     .style("stroke-width", pool_stroke_width)
     .style("stroke-opacity", pool_stroke_opacity)
-    .attr("tick", d => edfJSON[d].ticker)
+    .attr("tick", d => filtered_edfJSON[d].ticker)
     .attr("ph_id", d => d)
     .attr("class", "chord")
     .attr("color", function(d, i) {
-      edfJSON[d].color = color(i);
-      return color(i); 
+      return filtered_edfJSON[d].color
     })
   }
 
@@ -146,17 +162,20 @@ function draw(edfJSON) {
         if (d === 'new_delegation') {
           return delegation_color;
         }
-        return edfJSON[d].color; 
+        return filtered_edfJSON[d] ? filtered_edfJSON[d].color : filtered_pools_color; 
       })
       .style("opacity", ribbon_opacity)
       .attr("d", function(from_id) {
-        const target = edfJSON[to];
+        const target = filtered_edfJSON[to];
         const t_middle = arc_middle(target.arc);
         const dele_size = from[from_id]
         const arc_size = (dele_size / sum_sizes) * (Math.PI * 2);
         if (dele_size === 0) {return null}
         if (!(from_id === 'new_delegation')) {
-          const source = edfJSON[from_id];
+          if (!filtered_edfJSON[from_id]) { 
+            from_id = 'excluded'
+          }
+          let source = filtered_edfJSON[from_id];
           const s_middle = arc_middle(source.arc);
           const source_arc = deploy_space(source, s_middle, arc_size)
           const target_arc = deploy_space(target, t_middle, arc_size)
@@ -181,7 +200,7 @@ function draw(edfJSON) {
         if (d === 'new_delegation') {
           return delegation_color;
         }
-        return edfJSON[d].color; 
+        return filtered_edfJSON[d] ? filtered_edfJSON[d].color : filtered_pools_color; 
       })
       .style("stroke-width", ribbon_stroke_width)
       .style("stroke-opacity", ribbon_stroke_opacity)
@@ -200,7 +219,7 @@ function draw(edfJSON) {
       // const ticker = d3.select(this).attr("ticker")
       const id = d3.select(this).attr("ph_id")
 
-      draw_ticker_text(edfJSON[id], 'chart_ticker_select', 'red')
+      draw_ticker_text(filtered_edfJSON[id], 'chart_ticker_select', 'red')
 
       d3.selectAll(".ribbon")
         .style("opacity", 0)
@@ -266,6 +285,7 @@ function draw(edfJSON) {
       }
       document.getElementById('out').getElementsByTagName('span')[0].innerHTML = '';
       document.getElementById('in').getElementsByTagName('span')[0].innerHTML = '';
+      // console.log(edfJSON[id].from)
       deployFromTo(tos, 'out', edfJSON)
       deployFromTo(edfJSON[id].from, 'in', edfJSON)
     }); 
@@ -285,7 +305,9 @@ function deployFromTo(obj, type, edfJSON) {
     if (key === 'new_delegation') {
       appendString(`<div class="pool_ticker" style='color:green'>New Delegats</div>`)
     } else {
-      appendString(`<div class="pool_ticker">${edfJSON[key].ticker}</div>`)
+      // appendString(`<div class="pool_ticker" style="color:${edfJSON[key].color}">${edfJSON[key].ticker}</div>`)
+      // console.log(key)
+      appendString(`<div class="pool_ticker" style="color:grey">${edfJSON[key].ticker}</div>`)
     }
     appendString(`<div class="tab_value">${numeral(obj[key]).format('0,0')} ₳</div>`)
   })
@@ -366,13 +388,45 @@ function rad_to_deg(radians) {
   return radians * (180/pi);
 }
 
+function filterPools(edfJSON) {
+  let poolsize_min = $( "#slider-range" ).slider( "values", 0 ) 
+  let poolsize_max = $( "#slider-range" ).slider( "values", 1 ) 
+  ticker_limit = poolsize_min + ((poolsize_max - poolsize_min)/2)
+  let new_edfJSON = {}
+  let excluded = {size: 0, from: {}, ticker: 'Filtered Pools', pool_id: null}
+  let accepted_sum = 0
+  Object.keys(edfJSON).forEach((k) => {
+    if (edfJSON[k].size < poolsize_max && edfJSON[k].size > poolsize_min) {
+      new_edfJSON[k] = edfJSON[k]
+      accepted_sum += edfJSON[k].size
+    } else {
+      Object.keys(edfJSON[k].from).forEach((key) => {
+        if (excluded.from[key]) {
+          excluded.from[key] += edfJSON[k].from[key]
+        } else {
+          const v = edfJSON[k].from[key]
+          excluded.from[key] = v
+        }
+      })
+    }
+  })
+  Object.keys(excluded.from).forEach((k) => {
+    if (!new_edfJSON[k]) {
+      delete excluded.from[k]
+    }
+  })
+  excluded.size = accepted_sum / 10
+  new_edfJSON.excluded = excluded
+  return new_edfJSON
+}
+
 function make_angular(edfJSON) {
   const sum = Object.keys(edfJSON).reduce((a, k) => a + edfJSON[k].size, 0);
   const t = Math.PI * 2;
   const angular = Object.keys(edfJSON).forEach((k) => {
     edfJSON[k].angular_size = (edfJSON[k].size / sum) * t
   });
-  let previous = 0
+  let previous = 0;
   Object.keys(edfJSON).forEach((k) => {
     const arc = {start: previous, end: previous + edfJSON[k].angular_size}
     previous += edfJSON[k].angular_size

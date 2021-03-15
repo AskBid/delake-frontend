@@ -3,12 +3,14 @@ class AppStorage {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-	// getEDF(6)
 
-	AppStorage.epoch = new Epoch(210,241)
+
+	AppStorage.epoch = new Epoch(210,253)
+	AppStorage.epoch.displayEpoch()
 	AppStorage.epoch.checkEpochButtonState()
-
+	let DATA;
 	render()
+	sliderRun()
 
 	button = document.getElementById('prev');
 	button.addEventListener('click', function(event) {
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function render() {
 	$.getJSON(`assets/edf${AppStorage.epoch.current}.json`, function(data) {
+		DATA = data
 	  draw(data)
 	});
 }
@@ -70,6 +73,8 @@ class Epoch {
 		}
 	}
 
+
+
 	// static fetchEpochInfo() {
 	// 	return fetch(`${AppStorage.BACKEND_URL()}/epoch`,{
 	//     method:'GET',
@@ -86,6 +91,28 @@ class Epoch {
 	//   })
 	// }
 }
+
+function sliderRun() {
+  $( "#slider-range" ).slider({
+    range: true,	
+    min: 25000,
+    max: 144000000,
+    step: 100000,
+    values: [ 50000, 144000000 ],
+    slide: function( event, ui ) {
+      $( "#amount" ).val("₳" + numeral(ui.values[ 0 ]).format('0a') + " - ₳" + numeral(ui.values[ 1 ]).format('0a'));
+    }
+  });
+  $( "#amount" ).val("₳" + numeral($( "#slider-range" ).slider( "values", 0 )).format('0a') + " - ₳" + numeral($( "#slider-range" ).slider( "values", 1 )).format('0a'));
+  $( "#slider-range" ).slider({
+	  change: function( event, ui ) {
+	  	draw(DATA, true)
+	  }
+	});
+}
+
+
+// debugger
 
 // let json = {
 //   '30':{'from':{'32':7483},

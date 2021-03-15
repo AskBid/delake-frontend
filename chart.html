@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap" rel="stylesheet"><meta charset="utf-8">
+    <title>Total Delegations / Stake Addresses</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-inputs.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+    	.leftaxis > * {
+    		color: rgba(79,122,118,0.9);
+    	}
+    	.rightaxis > * {
+    		color: rgba(182,134,48,0.9);
+    	}
+
+    	a:visited, a:hover, a:active, a:focus {
+    		text-decoration: none !important;
+    		color: #e4e2ff;
+    		outline: none !important;
+    	}
+    </style>
+  </head>
+  <body>
+
+		<div style='display:flex;flex-direction:column;width:100%;height:100%'>
+			<div class='container'>
+				<div class='container'>
+					<div id='logo'>
+						<div>
+								<span style="color: #a0a0a0;text-decoration: none;">Black</span>
+								<br style="color: #e4e2ff;text-decoration:none;"><a href="index.html" style="text-decoration:none;color: #e4e2ff;">SWAN</a><br>
+								<span style="color: #a0a0a0;text-decoration: none;">Pool</span>
+						</div>
+					</div>
+				</div>
+			</div>
+  		<div class='container' style="height:100%; min-height: 400px; border: none; margin: 0px 60px 60px 60px; display: flex">
+  			<div style="flex:1; margin:50px 10px 0px 0px">
+  				<div><span style="color:rgba(79,122,118,1); font-weight: bold">Green bars</span> represent the number of Stake Addresses / Wallets delegated in each epoch.</div>
+  				<br>
+  				<div><span style="color:rgba(182,134,48,1); font-weight: bold">Yellow bars</span> represent the total amount of ADA delegated in each epoch.</div>
+  				<br>
+  				<div>The <span style="color:steelblue; font-weight: bold">Blue line</span> represents the ratio of total ada delegated / number of wallets. Could be seen as an average of each wallet size per each epoch.</div>
+  			</div>
+  			<div style="flex:3" class="chart"></div>
+  		</div>
+		</div>
+
+		<footer>delegate to black SWAN pool &hearts;</footer>
+		<script src="https://d3js.org/d3.v6.min.js"></script>
+		<script src='src/chart.js' defer></script>
+  </body>
+</html>

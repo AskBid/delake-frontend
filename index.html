@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles-inputs.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   </head>
   <body>
             
@@ -29,24 +32,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="padding:0px 15px;color:#aaa;">click on a pool rectangle to visualise info.</div>
+                        <div style="width:100%;display:flex;flex-direction:column;justify-content: stretch;align-items: center;pointer-events: auto;margin:0px 10px 20px 10px">
+
+                            <p style="flex:1 0; display: row; flex-direction: row;">
+                              <label for="amount" style="flex: 1; color:grey">Pool size range:</label>
+                              <input type="text" id="amount" readonly style="flex: 1; color:#f6931f; font-weight:bold;width:50%">
+                            </p>
+                             
+                            <div id="slider-range" style="flex:1 0;width:100%;min-height:10px"></div>
+                        </div>
                         <div id='filler'></div>
                         <div class="delegation_tab">
                             <div class='from_to_column' id='in'>
-                                <div class='tab_label' style='color:rgba(30,50,190,0.98);;'><b>IN:</b></div>
+                                <div class='tab_label' style='color:rgba(30,50,190,0.98);;'><b>IN (from):</b></div>
                                 <span>
                                 </span>
                             </div>
                             <div class='from_to_column' id='out'>
-                                <div class='tab_label' style='color:rgba(200,50,50,0.98);;'><b>OUT:</b></div>
+                                <div class='tab_label' style='color:rgba(200,50,50,0.98);;'><b>OUT (to):</b></div>
                                 <span>
                                 </span>
                             </div>
                         </div>
+                        <div style="padding:0px 15px;color:#aaa;">click on a pool rectangle to visualise info about the inflows/outflows.</div>
         			</div>
                     <div id='epoch'>
                         <button class='button' id='prev'><</button>
-                        <div id='writing'>epoch 241</div>
+                        <div id='writing'></div>
                         <button class='button' id='next'>></button>
                     </div>
                     <div id='donate_container'><a href='donate.html'><button id='donate'>Donate&hearts;</button></a></div>
@@ -56,7 +68,7 @@
 
 		<footer>delegate to black SWAN pool &hearts;</footer>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src='src/numeral.js' defer></script>
     <script src='src/fetch.js' defer></script>
